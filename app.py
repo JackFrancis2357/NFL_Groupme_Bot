@@ -56,9 +56,10 @@ def webhook():
     if currentuser == os.getenv('GROUPME_BOT_ID'):
         return
 
-    if currentmessage == 'hi':
+    if currentmessage == 'hi i am paul':
         msg = 'This is working'
         send_message(msg)
+        send_message(currentmessage)
 
     # dictionary that maps valid string to their functions
     commands = map_strings_to_functions()
