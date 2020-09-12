@@ -1,4 +1,4 @@
-# NFL_Groupme_Bot
+# NFL Groupme Bot
 
 Groupme bot to track our NFL team bet. Myself and three friends each selected 8 NFL teams for the 2020 season. The player who has the fewest wins between their 8 teams has to buy drinks for the rest. Bot can be called in groupme with 'colts suck'. App was built in Python and deployed on Heroku. For anyone wanting to do something similar, set a heroku config variable to your groupme bot id. 
 
