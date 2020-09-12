@@ -111,3 +111,6 @@ Pipfile
 
 # GroupMe Credentials
 gm_creds.py
+
+# Idea folder
+.idea/
