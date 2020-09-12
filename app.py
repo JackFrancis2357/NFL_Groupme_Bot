@@ -1,21 +1,5 @@
-# TrentBot
-#
-# A small python bot built to help with the administration of large GroupMe
-# group chats. Run on heroku free dynos and reads user messages to activate
-# commands.
-#
-# Types of commands:
-# PRIVILEGEDD - requesting user must be in the Heroku config variable 'PRIV_USERS'
-# COMMAND - any requesting user is able to make the command be executed
-# HIDDEN - contextual command, cannot be requested explicity
-#
-# Built by Trent Prynn
-
 import os
-import json
 import requests
-import random
-import ast
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
