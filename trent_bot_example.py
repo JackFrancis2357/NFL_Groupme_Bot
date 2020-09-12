@@ -11,7 +11,7 @@
 #
 # Built by Trent Prynn
 
-import os
+import o
 import json
 import requests
 import random
