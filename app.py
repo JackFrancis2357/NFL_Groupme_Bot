@@ -56,7 +56,7 @@ def webhook():
     if currentuser == os.getenv('GROUPME_BOT_ID'):
         return
 
-    if currentmessage == 'Hi':
+    if currentmessage == 'hi':
         msg = 'This is working'
         send_message(msg)
 
