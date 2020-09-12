@@ -110,9 +110,9 @@ def webhook():
             list_of_records.append(current_wins)
             list_of_records.append(current_losses)
 
-        msg = f'Jack: {list_of_records[0]}-{list_of_records[1]} \
-        Jordan: {list_of_records[2]}-{list_of_records[3]} \
-        Patrick: {list_of_records[4]}-{list_of_records[5]} \
+        msg = f'Jack: {list_of_records[0]}-{list_of_records[1]} \n \
+        Jordan: {list_of_records[2]}-{list_of_records[3]} \n \
+        Patrick: {list_of_records[4]}-{list_of_records[5]} \n \
         Nathan: {list_of_records[6]}-{list_of_records[7]}'
 
         send_message(msg)
