@@ -91,7 +91,7 @@ def webhook():
         patrick_teams = ['Cincinnati Bengals', 'Cleveland Browns', 'Houston Texans', 'Denver Broncos',
                          'Green Bay Packers', 'New Orleans Saints', 'Philadelphia Eagles', 'New York Giants']
         nate_teams = ['Pittsburgh Steelers', 'Indianapolis Colts', 'Buffalo Bills', 'Los Angeles Chargers',
-                      'Carolina Panthers', 'Tampa Bay Buccaneers', 'Washington Football Team', 'Los Angeles Rams']
+                      'Carolina Panthers', 'Tampa Bay Buccaneers', 'Washington', 'Los Angeles Rams']
 
         list_of_teams = [jack_teams, jordan_teams, patrick_teams, nate_teams]
         list_of_records = []
