@@ -45,32 +45,43 @@ def webhook():
         return
 
     if currentmessage == 'colts suck':
-        r = requests.get("https://www.pro-football-reference.com/years/2020/")
+        r = requests.get("https://www.espn.com/nfl/standings")
         tree = html.fromstring(r.content)
 
-        nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team Name', 'Wins', 'Losses'])
+        nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team Name', 'Wins', 'Losses', 'Ties'])
+        base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
 
         ctr = 0
+        # AFC Teams
         for i in range(1, 21):
-            cur_team_data = tree.xpath(f'//*[@id="AFC"]/tbody/tr[{i}]/td')
-            team_data = [td.text_content().strip() for td in cur_team_data]
-            if team_data[0][:3] == 'AFC' or team_data[0][:3] == 'NFC':
+            cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
+            team_name = [td.text_content().strip() for td in cur_team_data]
+            if not team_name:
                 continue
-            cur_team_wins, cur_team_loss = team_data[0], team_data[1]
-            current_team = tree.xpath(f'//*[@id="AFC"]/tbody/tr[{i}]/th')
-            team_name = [td.text_content().strip() for td in current_team]
-            nfl_results_df.iloc[ctr, :] = team_name[0], cur_team_wins, cur_team_loss
+            cur_team_wins = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
+            cur_team_loss = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
+            cur_team_tie = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
+
+            wins = [td.text_content().strip() for td in cur_team_wins]
+            losses = [td.text_content().strip() for td in cur_team_loss]
+            ties = [td.text_content().strip() for td in cur_team_tie]
+            nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
             ctr += 1
 
-            # NFC
-            cur_team_data = tree.xpath(f'//*[@id="NFC"]/tbody/tr[{i}]/td')
-            team_data = [td.text_content().strip() for td in cur_team_data]
-            if team_data[0][:3] == 'AFC' or team_data[0][:3] == 'NFC':
+        # NFC Teams
+        for i in range(1, 21):
+            cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
+            team_name = [td.text_content().strip() for td in cur_team_data]
+            if not team_name:
                 continue
-            cur_team_wins, cur_team_loss = team_data[0], team_data[1]
-            current_team = tree.xpath(f'//*[@id="NFC"]/tbody/tr[{i}]/th')
-            team_name = [td.text_content().strip() for td in current_team]
-            nfl_results_df.iloc[ctr, :] = team_name[0], cur_team_wins, cur_team_loss
+            cur_team_wins = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
+            cur_team_loss = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
+            cur_team_tie = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
+
+            wins = [td.text_content().strip() for td in cur_team_wins]
+            losses = [td.text_content().strip() for td in cur_team_loss]
+            ties = [td.text_content().strip() for td in cur_team_tie]
+            nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
             ctr += 1
 
         jack_teams = ['Baltimore Ravens', 'Tennessee Titans', 'New York Jets', 'Miami Dolphins',
