@@ -127,12 +127,13 @@ def webhook():
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
-            teams = standings.loc[standings['Name'] == 'Patrick', 'Team'].tolist()
-            wins = [int(i) for i in standings.loc[standings['Name'] == 'Patrick', 'Wins'].tolist()]
-            losses = [int(i) for i in standings.loc[standings['Name'] == 'Patrick', 'Losses'].tolist()]
+            names = standings['Name'].unique().tolist()
+            wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
+            losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
             message = str()
-            for i in range(0, len(teams)):
-                message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+            for i in range(0, len(names)):
+                message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+            print(message)
     
             return send_message(message)
 
