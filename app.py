@@ -155,14 +155,16 @@ def your_teams(teams, nfl_results_df):
 
     message = list()
     records = {}
+    count = 0
 
     for team in teams:
-        wins = int(nfl_results_df['Wins'][nfl_results_df['Team Name'] == team[team]])
-        losses = int(nfl_results_df['Losses'][nfl_results_df['Team Name'] == team[team]])
+        wins = int(nfl_results_df['Wins'][nfl_results_df['Team Name'] == team[count]])
+        losses = int(nfl_results_df['Losses'][nfl_results_df['Team Name'] == team[count]])
         records.update({team: [wins, losses]})
+        count += 1
 
     for tm, record in records.items():
-        message.append(f'{tm}: {record[0]}-{record[1]}\n')
+        message.append(f'{tm}: {record[tm][0]}-{record[tm][1]}\n')
 
     return ''.join(message)
 
