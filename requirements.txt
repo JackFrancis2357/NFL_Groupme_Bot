@@ -1,7 +1,8 @@
+bs4
 certifi==2020.6.20
 Flask
 gunicorn
-requests
-pandas
-bs4
 lxml
+pandas
+pyyaml==5.3.1
+requests
