@@ -48,49 +48,49 @@ def webhook():
 
     # Only if messsage is something we want to reply to do we request data from ESPN
     if currentmessage in configs.base_configs['Responses']:
-        r = requests.get("https://www.espn.com/nfl/standings")
-        tree = html.fromstring(r.content)
+r = requests.get("https://www.espn.com/nfl/standings")
+tree = html.fromstring(r.content)
 
-        nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team Name', 'Wins', 'Losses', 'Ties'])
-        base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
+nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team Name', 'Wins', 'Losses', 'Ties'])
+base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
 
-        ctr = 0
-        # AFC Teams
-        for i in range(1, 21):
-            cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-            team_name = [td.text_content().strip() for td in cur_team_data]
-            if not team_name:
-                continue
-            cur_team_wins = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
-            cur_team_loss = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
-            cur_team_tie = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
+ctr = 0
+# AFC Teams
+for i in range(1, 21):
+    cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
+    team_name = [td.text_content().strip() for td in cur_team_data]
+    if not team_name:
+        continue
+    cur_team_wins = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
+    cur_team_loss = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
+    cur_team_tie = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
 
-            wins = [td.text_content().strip() for td in cur_team_wins]
-            losses = [td.text_content().strip() for td in cur_team_loss]
-            ties = [td.text_content().strip() for td in cur_team_tie]
-            nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
-            ctr += 1
+    wins = [td.text_content().strip() for td in cur_team_wins]
+    losses = [td.text_content().strip() for td in cur_team_loss]
+    ties = [td.text_content().strip() for td in cur_team_tie]
+    nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
+    ctr += 1
 
-        # NFC Teams
-        for i in range(1, 21):
-            cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-            team_name = [td.text_content().strip() for td in cur_team_data]
-            if not team_name:
-                continue
-            cur_team_wins = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
-            cur_team_loss = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
-            cur_team_tie = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
+# NFC Teams
+for i in range(1, 21):
+    cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
+    team_name = [td.text_content().strip() for td in cur_team_data]
+    if not team_name:
+        continue
+    cur_team_wins = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
+    cur_team_loss = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
+    cur_team_tie = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
 
-            wins = [td.text_content().strip() for td in cur_team_wins]
-            losses = [td.text_content().strip() for td in cur_team_loss]
-            ties = [td.text_content().strip() for td in cur_team_tie]
-            nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
-            ctr += 1
+    wins = [td.text_content().strip() for td in cur_team_wins]
+    losses = [td.text_content().strip() for td in cur_team_loss]
+    ties = [td.text_content().strip() for td in cur_team_tie]
+    nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
+    ctr += 1
 
-        jack_teams = configs.base_configs['Jack']
-        jordan_teams = configs.base_configs['Jordan']
-        nathan_teams = configs.base_configs['Nathan']
-        patrick_teams = configs.base_configs['Patrick']
+jack_teams = configs.base_configs['Jack']
+jordan_teams = configs.base_configs['Jordan']
+nathan_teams = configs.base_configs['Nathan']
+patrick_teams = configs.base_configs['Patrick']
 
         # Pull in list of teams from base.yaml
         list_of_teams = [
@@ -157,14 +157,13 @@ def your_teams(teams, nfl_results_df):
     records = {}
     count = 0
 
-    for team in teams:
-        wins = int(nfl_results_df['Wins'][nfl_results_df['Team Name'] == team[count]])
-        losses = int(nfl_results_df['Losses'][nfl_results_df['Team Name'] == team[count]])
-        records.update({team: [wins, losses]})
-        count += 1
+    nfl_results_df['Wins'] = nfl_results_df['Wins'].astype('int64')
+    wins = int(nfl_results_df.loc[nfl_results_df['Team Name'].isin(player_teams), ['Wins']].sum())
+    nfl_results_df['Losses'] = nfl_results_df['Losses'].astype('int64')
+    losses = int(nfl_results_df.loc[nfl_results_df['Team Name'].isin(player_teams), ['Losses']].sum())
 
     for tm, record in records.items():
-        message.append(f'{tm}: {record[tm][0]}-{record[tm][1]}\n')
+        message.append(f'{wins}-{losses}\n')
 
     return ''.join(message)
 
