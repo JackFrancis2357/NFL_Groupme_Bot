@@ -184,4 +184,4 @@ def send_message(msg):
     except requests.exceptions.RequestException as e:
         print(e)
 
-    return response
+    return response.status_code
