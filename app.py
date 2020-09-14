@@ -128,6 +128,7 @@ def webhook():
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
             names = standings['Name'].unique().tolist()
+            names.sort()
             wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
             losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
             message = str()
