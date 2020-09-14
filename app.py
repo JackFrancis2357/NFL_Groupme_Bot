@@ -1,7 +1,6 @@
 import os
 import requests
 import pandas as pd
-import requests
 from bs4 import BeautifulSoup
 from lxml import html
 
@@ -122,29 +121,6 @@ def webhook():
 
         standings = name_team.merge(nfl_results_df, how = 'left', on = 'Team')
 
-        # Pull in list of teams from base.yaml
-        list_of_teams = [
-            jack_teams,
-            jordan_teams,
-            nathan_teams,
-            patrick_teams,
-        ]
-
-        list_of_records = []
-
-        for team in list_of_teams:
-            current_wins = 0
-            current_losses = 0
-            for i in range(8):
-                current_wins += int(nfl_results_df['Wins'][nfl_results_df['Team'] == team[i]])
-                current_losses += int(nfl_results_df['Losses'][nfl_results_df['Team'] == team[i]])
-            list_of_records.append(current_wins)
-            list_of_records.append(current_losses)
-
-        # Define message arguments
-        player_teams = []
-        all_teams = False
-
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
             names = standings['Name'].unique().tolist()
@@ -158,8 +134,7 @@ def webhook():
     
             return send_message(message)
 
-
-        # Determine which teams, if any, to present stats for
+        # Message options - either all teams, a player's teams, or print help
         elif currentmessage == "patrick teams":
             return_contestant('Patrick')
         elif currentmessage == "jordan teams":
@@ -170,40 +145,11 @@ def webhook():
             return_contestant('Jack')
         elif currentmessage == "all teams":
             return_contestant('All')
-
-        # Message options - either all teams, a player's teams, or print help
-        if all_teams:
-            message = your_teams(list_of_teams, nfl_results_df)
-        elif player_teams:
-            message = your_teams(player_teams, nfl_results_df)
-        else:
-            # Print help options
+        elif currentmessage == 'nfl bot help':
             options = configs.base_configs['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
-
-        return send_message(message)
-
-
-def your_teams(teams, nfl_results_df):
-    """Create message for one specific players teams."""
-
-    message = list()
-    records = {}
-    count = 0
-
-    nfl_results_df['Wins'] = nfl_results_df['Wins'].astype('int64')
-    #wins = int(nfl_results_df.loc[nfl_results_df['Team Name'].isin(player_teams), ['Wins']].sum())
-    nfl_results_df['Losses'] = nfl_results_df['Losses'].astype('int64')
-    #losses = int(nfl_results_df.loc[nfl_results_df['Team Name'].isin(player_teams), ['Losses']].sum())
-
-    
-    #message.append(f'{wins}-{losses}\n')
-
-    return ''.join(message)
-
-
-
+            return send_message(message)
 
 
 def send_message(msg):
