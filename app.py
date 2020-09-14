@@ -51,7 +51,7 @@ def webhook():
         r = requests.get("https://www.espn.com/nfl/standings")
         tree = html.fromstring(r.content)
 
-        nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team Name', 'Wins', 'Losses', 'Ties'])
+        nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
         base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
 
         ctr = 0
