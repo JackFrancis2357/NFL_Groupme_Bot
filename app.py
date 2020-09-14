@@ -116,8 +116,8 @@ def webhook():
             current_wins = 0
             current_losses = 0
             for i in range(8):
-                current_wins += int(nfl_results_df['Wins'][nfl_results_df['Team Name'] == team[i]])
-                current_losses += int(nfl_results_df['Losses'][nfl_results_df['Team Name'] == team[i]])
+                current_wins += int(nfl_results_df['Wins'][nfl_results_df['Team'] == team[i]])
+                current_losses += int(nfl_results_df['Losses'][nfl_results_df['Team'] == team[i]])
             list_of_records.append(current_wins)
             list_of_records.append(current_losses)
 
