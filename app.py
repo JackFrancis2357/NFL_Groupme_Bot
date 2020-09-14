@@ -7,6 +7,8 @@ from lxml import html
 
 from flask import Flask, request
 
+import configs
+
 app = Flask(__name__)
 
 
@@ -37,14 +39,15 @@ def webhook():
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
 
-    # current message to be parsed
-    currentmessage = data['text'].lower().strip()
-
     # make sure the bot never replies to itself
     if currentuser == os.getenv('GROUPME_BOT_ID'):
         return
 
-    if currentmessage == 'colts suck':
+    # current message to be parsed
+    currentmessage = data['text'].lower().strip()
+
+    # Only if messsage is something we want to reply to do we request data from ESPN
+    if currentmessage in configs.base_configs['Responses']:
         r = requests.get("https://www.espn.com/nfl/standings")
         tree = html.fromstring(r.content)
 
@@ -84,16 +87,19 @@ def webhook():
             nfl_results_df.iloc[ctr, :] = team_name[0], wins[0], losses[0], ties[0]
             ctr += 1
 
-        jack_teams = ['Baltimore Ravens', 'Tennessee Titans', 'New York Jets', 'Miami Dolphins',
-                      'New England Patriots', 'Atlanta Falcons', 'San Francisco 49ers', 'Arizona Cardinals']
-        jordan_teams = ['Jacksonville Jaguars', 'Kansas City Chiefs', 'Las Vegas Raiders', 'Detroit Lions',
-                        'Minnesota Vikings', 'Chicago Bears', 'Dallas Cowboys', 'Seattle Seahawks']
-        patrick_teams = ['Cincinnati Bengals', 'Cleveland Browns', 'Houston Texans', 'Denver Broncos',
-                         'Green Bay Packers', 'New Orleans Saints', 'Philadelphia Eagles', 'New York Giants']
-        nate_teams = ['Pittsburgh Steelers', 'Indianapolis Colts', 'Buffalo Bills', 'Los Angeles Chargers',
-                      'Carolina Panthers', 'Tampa Bay Buccaneers', 'Washington', 'Los Angeles Rams']
+        jack_teams = configs.base_configs['Jack']
+        jordan_teams = configs.base_configs['Jordan']
+        nathan_teams = configs.base_configs['Nathan']
+        patrick_teams = configs.base_configs['Patrick']
 
-        list_of_teams = [jack_teams, jordan_teams, patrick_teams, nate_teams]
+        # Pull in list of teams from base.yaml
+        list_of_teams = [
+            jack_teams,
+            jordan_teams,
+            nathan_teams,
+            patrick_teams,
+        ]
+
         list_of_records = []
 
         for team in list_of_teams:
@@ -105,14 +111,60 @@ def webhook():
             list_of_records.append(current_wins)
             list_of_records.append(current_losses)
 
-        msg1 = f'Jack: {list_of_records[0]}-{list_of_records[1]} \n'
-        msg2 = f'Jordan: {list_of_records[2]}-{list_of_records[3]} \n'
-        msg3 = f'Patrick: {list_of_records[4]}-{list_of_records[5]} \n'
-        msg4 = f'Nathan: {list_of_records[6]}-{list_of_records[7]}'
+        # Define message arguments
+        player_teams = []
+        all_teams = False
 
-        send_message(msg1 + msg2 + msg3 + msg4)
+        # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
+        if currentmessage == 'standings':
+            msg1 = f'Jack: {list_of_records[0]}-{list_of_records[1]} \n'
+            msg2 = f'Jordan: {list_of_records[2]}-{list_of_records[3]} \n'
+            msg3 = f'Nathan: {list_of_records[4]}-{list_of_records[5]} \n'
+            msg4 = f'Patrick: {list_of_records[6]}-{list_of_records[7]}'
 
-    return "ok", 200
+            return send_message(msg1 + msg2 + msg3 + msg4)
+
+        # Determine which teams, if any, to present stats for
+        elif currentmessage == "patrick teams":
+            player_teams = patrick_teams
+        elif currentmessage == "jordan teams":
+            player_teams = jordan_teams
+        elif currentmessage == "nathan teams":
+            player_teams = nathan_teams
+        elif currentmessage == "jack teams":
+            player_teams = jack_teams
+        elif currentmessage == "all teams":
+            all_teams = True
+
+        # Message options - either all teams, a player's teams, or print help
+        if all_teams:
+            message = your_teams(list_of_teams, nfl_results_df)
+        elif player_teams:
+            message = your_teams(player_teams, nfl_results_df)
+        else:
+            # Print help options
+            options = configs.base_configs['Responses']
+            header = "Input options for the NFL Wins Tracker bot:\n"
+            message = header + "\n".join(options)
+
+        return send_message(message)
+
+
+def your_teams(teams, nfl_results_df):
+    """Create message for one specific players teams."""
+
+    message = list()
+    records = {}
+
+    for team in teams:
+        wins = int(nfl_results_df['Wins'][nfl_results_df['Team Name'] == team[team]])
+        losses = int(nfl_results_df['Losses'][nfl_results_df['Team Name'] == team[team]])
+        records.update({team: [wins, losses]})
+
+    for tm, record in records.items():
+        message.append(f'{tm}: {record[0]}-{record[1]}\n')
+
+    return ''.join(message)
 
 
 def send_message(msg):
@@ -127,4 +179,9 @@ def send_message(msg):
         'text': msg
     }
 
-    response = requests.post(url, json=payload)
+    try:
+        response = requests.post(url, json=payload)
+    except requests.exceptions.RequestException as e:
+        print(e)
+
+    return response
