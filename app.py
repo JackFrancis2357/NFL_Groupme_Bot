@@ -162,8 +162,8 @@ def your_teams(teams, nfl_results_df):
     nfl_results_df['Losses'] = nfl_results_df['Losses'].astype('int64')
     losses = int(nfl_results_df.loc[nfl_results_df['Team Name'].isin(player_teams), ['Losses']].sum())
 
-    for tm, record in records.items():
-        message.append(f'{wins}-{losses}\n')
+    
+    message.append(f'{wins}-{losses}\n')
 
     return ''.join(message)
 
