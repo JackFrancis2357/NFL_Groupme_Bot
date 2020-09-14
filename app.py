@@ -37,6 +37,10 @@ def webhook():
 
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
+    user_json = requests.get('https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('GROUPME_BOT_ID')).json()
+    groupme_users = dict()
+    for member in user_json['response']['members']:
+        groupme_users.update({member['user_id']: member['name']})
 
     # make sure the bot never replies to itself
     if currentuser == os.getenv('GROUPME_BOT_ID'):
@@ -150,6 +154,9 @@ def webhook():
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
+        elif currentmessage == 'my teams':
+            return_contestant(groupme_users[currentuser].split()[0])
+            
 
 
 def send_message(msg):
