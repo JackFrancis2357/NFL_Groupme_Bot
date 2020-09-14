@@ -141,15 +141,15 @@ def webhook():
 
         # Determine which teams, if any, to present stats for
         elif currentmessage == "patrick teams":
-            player_teams = patrick_teams
+            return_contestant('Patrick')
         elif currentmessage == "jordan teams":
-            player_teams = jordan_teams
+            return_contestant('Jordan')
         elif currentmessage == "nathan teams":
-            player_teams = nathan_teams
+            return_contestant('Nathan')
         elif currentmessage == "jack teams":
-            player_teams = jack_teams
+            return_contestant('Jack')
         elif currentmessage == "all teams":
-            all_teams = True
+            return_contestant('All')
 
         # Message options - either all teams, a player's teams, or print help
         if all_teams:
@@ -181,6 +181,27 @@ def your_teams(teams, nfl_results_df):
     #message.append(f'{wins}-{losses}\n')
 
     return ''.join(message)
+
+
+def return_contestant(name = str):
+    if name == 'All':
+        teams = standings.loc[:, 'Team'].tolist()
+        wins = [int(i) for i in standings.loc[:, 'Wins'].tolist()]
+        losses = [int(i) for i in standings.loc[:, 'Losses'].tolist()]
+        message = str()
+        for i in range(0, len(teams)):
+            message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+            
+        return send_message(message)
+    else:
+        teams = standings.loc[standings['Name'] == name, 'Team'].tolist()
+        wins = [int(i) for i in standings.loc[standings['Name'] == name, 'Wins'].tolist()]
+        losses = [int(i) for i in standings.loc[standings['Name'] == name, 'Losses'].tolist()]
+        message = str()
+        for i in range(0, len(teams)):
+            message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+
+        return send_message(message)
 
 
 def send_message(msg):
