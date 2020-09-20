@@ -138,6 +138,18 @@ def webhook():
     
             return send_message(message)
 
+        if currentmessage == 'mother fucking standings':
+            names = standings['Name'].unique().tolist()
+            names.sort()
+            wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
+            losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
+            message = str()
+            for i in range(0, len(names)):
+                message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+            print(message)
+    
+            return send_message(message.upper())
+
         # Message options - either all teams, a player's teams, or print help
         elif currentmessage == "patrick teams":
             return_contestant('Patrick')
