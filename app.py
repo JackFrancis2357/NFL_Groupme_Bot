@@ -138,7 +138,7 @@ def webhook():
     
             return send_message(message)
 
-        if currentmessage == 'mother fucking standings':
+        elif currentmessage == 'mother fucking standings':
             names = standings['Name'].unique().tolist()
             names.sort()
             wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
