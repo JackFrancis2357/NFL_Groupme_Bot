@@ -158,6 +158,21 @@ def webhook():
             return send_message(message)
         elif currentmessage == 'my teams':
             return_contestant(groupme_users[currentuser].split()[0])
+    elif currentmessage[:4].lower() == '!who':
+        jack_teams = configs.base_configs['Jack']
+        jordan_teams = configs.base_configs['Jordan']
+        nathan_teams = configs.base_configs['Nathan']
+        patrick_teams = configs.base_configs['Patrick']
+        teams_list = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
+        names = ['Jack', 'Jordan', 'Nathan', 'Patrick']
+        team_id = currentmessage[6:]
+        for owner in range(4):
+            if team_id in teams_list[owner]:
+                return send_message(names[owner])
+            else:
+                for team in teams_list[owner]:
+                    if team_id in team:
+                        return send_message(names[owner])
 
 
 def send_message(msg):
