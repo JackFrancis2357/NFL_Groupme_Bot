@@ -37,8 +37,7 @@ def webhook():
 
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
-    user_json = requests.get(
-        'https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
+    user_json = requests.get('https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
     groupme_users = dict()
     for member in user_json['response']['members']:
         groupme_users.update({member['user_id']: member['name']})
@@ -50,7 +49,7 @@ def webhook():
     # current message to be parsed
     currentmessage = data['text'].lower().strip()
 
-    def return_contestant(name=str):
+    def return_contestant(name = str):
         if name == 'All':
             teams = standings.loc[:, 'Team'].tolist()
             wins = [int(i) for i in standings.loc[:, 'Wins'].tolist()]
@@ -58,7 +57,7 @@ def webhook():
             message = str()
             for i in range(0, len(teams)):
                 message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
-
+                
             return send_message(message)
         else:
             teams = standings.loc[standings['Name'] == name, 'Team'].tolist()
@@ -95,7 +94,7 @@ def webhook():
             ties = int(cur_team_tie[0].text_content())
             nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
             ctr += 1
-
+            
         # NFC Teams
         for i in range(1, 21):
             cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
@@ -119,13 +118,12 @@ def webhook():
         patrick_teams = configs.base_configs['Patrick']
         all_teams = jack_teams + jordan_teams + patrick_teams + nathan_teams
 
-        name_team = pd.DataFrame(columns=['Name', 'Team'])
+        name_team = pd.DataFrame(columns = ['Name', 'Team'])
         name_team['Team'] = all_teams
-        for team_list, name in zip([jack_teams, jordan_teams, nathan_teams, patrick_teams],
-                                   ['Jack', 'Jordan', 'Nathan', 'Patrick']):
+        for team_list, name in zip([jack_teams, jordan_teams, nathan_teams, patrick_teams], ['Jack', 'Jordan', 'Nathan', 'Patrick']):
             name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
 
-        standings = name_team.merge(nfl_results_df, how='left', on='Team')
+        standings = name_team.merge(nfl_results_df, how = 'left', on = 'Team')
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
@@ -137,8 +135,20 @@ def webhook():
             for i in range(0, len(names)):
                 message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
             print(message)
-
+    
             return send_message(message)
+
+        elif currentmessage == 'mother fucking standings':
+            names = standings['Name'].unique().tolist()
+            names.sort()
+            wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
+            losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
+            message = str()
+            for i in range(0, len(names)):
+                message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+            print(message)
+    
+            return send_message(message.upper())
 
         # Message options - either all teams, a player's teams, or print help
         elif currentmessage == "patrick teams":
@@ -173,6 +183,7 @@ def webhook():
                 for team in teams_list[owner]:
                     if team_id in team:
                         return send_message(names[owner])
+            
 
 
 def send_message(msg):
