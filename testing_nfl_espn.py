@@ -3,7 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from lxml import html
 
-r = requests.get("https://www.espn.com/nfl/standings")
+r = requests.get("https://www.espn.com/nfl/standings/_/season/2020")
 tree = html.fromstring(r.content)
 
 nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team Name', 'Wins', 'Losses', 'Ties'])
@@ -56,6 +56,8 @@ nate_teams = ['Pittsburgh Steelers', 'Indianapolis Colts', 'Buffalo Bills', 'Los
 
 list_of_teams = [jack_teams, jordan_teams, patrick_teams, nate_teams]
 list_of_records = []
+
+print(nfl_results_df.head())
 
 for team in list_of_teams:
     current_wins = 0
