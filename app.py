@@ -3,14 +3,39 @@ import requests
 import pandas as pd
 from lxml import html
 
-from flask import Flask, request
+from flask import Flask, redirect, url_for, request, session, render_template, make_response
+from flask_bootstrap import Bootstrap
+from flask_session import Session
+from flask_login import LoginManager, login_user, login_required, UserMixin
 
-import configs
+# import yaml
+#
+# # Read in base configs
+# with open('config/base.yaml', 'r') as file:
+#     try:
+#         base_configs = yaml.safe_load(file)
+#     except yaml.YAMLError as e:
+#         print(e)
+
 
 app = Flask(__name__)
+bootstrap = Bootstrap(app)
+app.config['SECRET_KEY'] = 'dogs-are-the-best'
+app.config['SESSION_TYPE'] = 'filesystem'
+FLASK_DEBUG = True
 
+Session(app)
 
-@app.route('/', methods=['POST'])
+# Login code
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = ''
+
+@app.route('/', methods=['GET', 'POST'])
+def homepage():
+    return render_template('golem_homepage.html')
+
+@app.route('/groupmebot', methods=['POST'])
 def webhook():
     # The web hook that's called every time a message is sent in the chat.
     # The function receives the following JSON in a POST
@@ -214,3 +239,11 @@ def send_message(msg):
         print(e)
 
     return response.status_code
+
+
+if __name__ == "__main__":
+    try:
+        session.clear()
+    except:
+        pass
+    app.run(port=6432, debug=True)
