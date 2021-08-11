@@ -28,8 +28,18 @@ def homepage():
     current_week = 1
     matchups_df = pd.read_csv('Weekly_Matchups.csv')
     current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
-    print(current_matchups)
-    return render_template('nfl_wins_homepage.html')
+    away_home_teams = current_matchups.str.split(pat='at', expand=True)
+    away_home_teams.columns = ['Away', 'Home']
+
+    matchups = []
+    for i in range(away_home_teams.shape[0]):
+        doc = {
+            'Away': away_home_teams['Away'][i],
+            'Home': away_home_teams['Home'][i]
+        }
+        matchups.append(doc)
+
+    return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'])
 
 @app.route('/groupmebot', methods=['POST'])
 def webhook():

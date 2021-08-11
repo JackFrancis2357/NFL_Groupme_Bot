@@ -1,15 +1,30 @@
 {% extends "shared_layout.html" %}
 {% block content %}
 
-<div class="container">
+    <div class="container">
+        <table class="table table-striped">
+            <thead>
+            {%- for column in columns %}
+                <th>{{ column }}</th>
+            {%- endfor %}
+            </thead>
 
-</div>
-
-<div class="row">
-    {% if error %}
-    <div class="alert alert-danger" role="alert">
-        {{ error }}
+            <tbody>
+            {%- for row in matchups %}
+                <tr>
+                    <td> {{ row.Away }}</td>
+                    <td> {{ row.Home }}</td>
+                </tr>
+            {%- endfor %}
+            </tbody>
+        </table>
     </div>
-    {% endif %}
-</div>
+
+    <div class="row">
+        {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
