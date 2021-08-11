@@ -8,15 +8,7 @@ from flask_bootstrap import Bootstrap
 from flask_session import Session
 from flask_login import LoginManager, login_user, login_required, UserMixin
 
-# import yaml
-#
-# # Read in base configs
-# with open('config/base.yaml', 'r') as file:
-#     try:
-#         base_configs = yaml.safe_load(file)
-#     except yaml.YAMLError as e:
-#         print(e)
-
+import configs
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -27,13 +19,17 @@ FLASK_DEBUG = True
 Session(app)
 
 # Login code
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = ''
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = ''
 
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    return render_template('golem_homepage.html')
+    current_week = 1
+    matchups_df = pd.read_csv('Weekly_Matchups.csv')
+    current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
+    print(current_matchups)
+    return render_template('nfl_wins_homepage.html')
 
 @app.route('/groupmebot', methods=['POST'])
 def webhook():
