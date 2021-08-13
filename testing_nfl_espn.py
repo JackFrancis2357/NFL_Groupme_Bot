@@ -1,7 +1,9 @@
 import pandas as pd
 import requests
-from bs4 import BeautifulSoup
 from lxml import html
+
+from helpers.setup_logger import LOGGER
+import logging
 
 r = requests.get("https://www.espn.com/nfl/standings/_/season/2020")
 tree = html.fromstring(r.content)
@@ -57,18 +59,6 @@ nate_teams = ['Pittsburgh Steelers', 'Indianapolis Colts', 'Buffalo Bills', 'Los
 list_of_teams = [jack_teams, jordan_teams, patrick_teams, nate_teams]
 list_of_records = []
 
-print(nfl_results_df.head())
-
-for team in list_of_teams:
-    current_wins = 0
-    current_losses = 0
-    for i in range(8):
-        current_wins += int(nfl_results_df['Wins'][nfl_results_df['Team Name'] == team[i]])
-        current_losses += int(nfl_results_df['Losses'][nfl_results_df['Team Name'] == team[i]])
-    list_of_records.append(current_wins)
-    list_of_records.append(current_losses)
-
-print(f'Jack: {list_of_records[0]}-{list_of_records[1]}')
-print(f'Jordan: {list_of_records[2]}-{list_of_records[3]}')
-print(f'Patrick: {list_of_records[4]}-{list_of_records[5]}')
-print(f'Nathan: {list_of_records[6]}-{list_of_records[7]}')
+logging.info("This is a test from the dataframe file")
+# LOGGER.info("Now printing the dataframe head.")
+# print(nfl_results_df.head())

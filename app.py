@@ -1,11 +1,12 @@
+import logging
 import os
-import requests
-import pandas as pd
-from lxml import html
 
+import pandas as pd
+import requests
+from lxml import html
 from flask import Flask, request
 
-import configs
+from configs import Config
 
 app = Flask(__name__)
 
@@ -37,8 +38,10 @@ def webhook():
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
     user_json = requests.get(
-        'https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
+        f"https://api.groupme.com/v3/groups/{data['group_id']}?token={os.getenv('TOKEN')}"
+    ).json()
     groupme_users = dict()
+
     for member in user_json['response']['members']:
         groupme_users.update({member['user_id']: member['name']})
 
@@ -70,8 +73,8 @@ def webhook():
             return send_message(message)
 
     # Only if message is something we want to reply to do we request data from ESPN
-    if currentmessage in configs.base_configs['Responses']:
-        r = requests.get("https://www.espn.com/nfl/standings")
+    if currentmessage in Config['Responses']:
+        r = requests.get(f"{Config['espn_url']}")
         tree = html.fromstring(r.content)
 
         nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
@@ -122,6 +125,7 @@ def webhook():
             nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
             ctr += 1
 
+        # TODO: Fix This
         jack_teams = configs.base_configs['Jack']
         jordan_teams = configs.base_configs['Jordan']
         nathan_teams = configs.base_configs['Nathan']
