@@ -8,11 +8,17 @@ def get_team_list(teams_list):
     return team_abb_list
 
 
-def get_team_abb():
+def get_teams():
     jack_teams = configs.base_configs['Jack']
     jordan_teams = configs.base_configs['Jordan']
     nathan_teams = configs.base_configs['Nathan']
     patrick_teams = configs.base_configs['Patrick']
+
+    return jack_teams, jordan_teams, nathan_teams, patrick_teams
+
+
+def get_team_abb():
+    jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
 
     jack_t = get_team_list(jack_teams)
     jordan_t = get_team_list(jordan_teams)

@@ -9,9 +9,9 @@ from flask_session import Session
 from flask_login import LoginManager, login_user, login_required, UserMixin
 
 import configs
-from app_helper_functions import get_team_list, get_team_abb, get_team_owner, get_owner_hex_value
+from app_helper_functions import get_team_list, get_team_abb, get_team_owner, get_owner_hex_value, get_teams
 from get_homepage_data import get_homepage_data
-from groupme_bot_functions import return_contestant, send_message
+from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -80,117 +80,23 @@ def webhook():
 
     # Only if message is something we want to reply to do we request data from ESPN
     if currentmessage in configs.base_configs['Responses']:
-        r = requests.get("https://www.espn.com/nfl/standings")
-        tree = html.fromstring(r.content)
-
-        nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
-        base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/section/'
-
-        ctr = 0
-        # AFC Teams
-        for i in range(1, 21):
-
-            try:
-                # Try to get team name - if playoff code has been added, span[3] is ARI; span[4] is Arizona Cardinals
-                cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-
-                if len(cur_team_data[0].text_content()) < 4:
-                    cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
-                team_name = cur_team_data[0].text_content()
-            except:
-                continue
-
-            cur_team_wins = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
-            cur_team_loss = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
-            cur_team_tie = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
-
-            wins = int(cur_team_wins[0].text_content())
-            losses = int(cur_team_loss[0].text_content())
-            ties = int(cur_team_tie[0].text_content())
-            nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
-            ctr += 1
-
-        # NFC Teams
-        for i in range(1, 21):
-            cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-            try:
-                cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-                if len(cur_team_data[0].text_content()) < 4:
-                    cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
-                team_name = cur_team_data[0].text_content()
-            except:
-                continue
-
-            cur_team_wins = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
-            cur_team_loss = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
-            cur_team_tie = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
-
-            wins = int(cur_team_wins[0].text_content())
-            losses = int(cur_team_loss[0].text_content())
-            ties = int(cur_team_tie[0].text_content())
-            nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
-            ctr += 1
-
-        jack_teams = configs.base_configs['Jack']
-        jordan_teams = configs.base_configs['Jordan']
-        nathan_teams = configs.base_configs['Nathan']
-        patrick_teams = configs.base_configs['Patrick']
-        all_teams = jack_teams + jordan_teams + patrick_teams + nathan_teams
-
-        name_team = pd.DataFrame(columns=['Name', 'Team'])
-        name_team['Team'] = all_teams
-        for team_list, name in zip([jack_teams, jordan_teams, nathan_teams, patrick_teams],
-                                   ['Jack', 'Jordan', 'Nathan', 'Patrick']):
-            name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
-
-        standings = name_team.merge(nfl_results_df, how='left', on='Team')
-
-        print(currentmessage)
-        print(len(currentmessage))
-        cur_message_split = currentmessage.split()
-        if len(cur_message_split) == 2 and cur_message_split[-1] == 'teams':
-            print(cur_message_split[0].capitalize())
+        standings = get_standings()
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
-            names = standings['Name'].unique().tolist()
-            names.sort()
-            wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
-            losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
-            message = str()
-            for i in range(0, len(names)):
-                message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
-            print(message)
-
-            send_message(message)
-
-            return 'test'
+            message = get_standings_message(standings)
+            return send_message(message)
 
         elif currentmessage == 'mother fucking standings':
-            names = standings['Name'].unique().tolist()
-            names.sort()
-            wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
-            losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
-            message = str()
-            for i in range(0, len(names)):
-                message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
-            print(message)
-
+            message = get_standings_message(standings)
             return send_message(message.upper())
 
         # Message options - either all teams, a player's teams, or print help
 
-
-        elif currentmessage == "patrick teams":
-            return_contestant('Patrick')
-        elif currentmessage == "jordan teams":
-            return_contestant('Jordan')
-        elif currentmessage == "nathan teams":
-            return_contestant('Nathan')
-        elif currentmessage == "jack teams":
-            return_contestant('Jack')
-        elif currentmessage == "all teams":
-            return_contestant('All')
+        elif len(currentmessage.split()) == 2 and currentmessage.split()[-1] == 'teams':
+            name = currentmessage.split()[0].capitalize()
+            if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
+                return_contestant(name, standings)
         elif currentmessage == 'nfl bot help':
             options = configs.base_configs['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
@@ -199,10 +105,8 @@ def webhook():
         elif currentmessage == 'my teams':
             return_contestant(groupme_users[currentuser].split()[0])
     elif currentmessage[:4].lower() == '!who':
-        jack_teams = configs.base_configs['Jack']
-        jordan_teams = configs.base_configs['Jordan']
-        nathan_teams = configs.base_configs['Nathan']
-        patrick_teams = configs.base_configs['Patrick']
+        # I think this can be teams_list = [get_teams()] but will test later
+        jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
         teams_list = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
         names = ['Jack', 'Jordan', 'Nathan', 'Patrick']
         team_id = currentmessage[6:]
@@ -213,26 +117,6 @@ def webhook():
                 for team in teams_list[owner]:
                     if team_id in team:
                         return send_message(names[owner])
-
-
-def send_message(msg):
-    # sends a POST request to the GroupMe API with the message to be sent by the bot
-    #
-    # @Param msg : message to be sent to GroupMe chat
-
-    url = 'https://api.groupme.com/v3/bots/post'
-
-    payload = {
-        'bot_id': os.getenv('GROUPME_BOT_ID'),
-        'text': msg
-    }
-
-    try:
-        response = requests.post(url, json=payload)
-    except requests.exceptions.RequestException as e:
-        print(e)
-
-    return response.status_code
 
 
 # if __name__ == '__main__':
