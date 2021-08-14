@@ -147,8 +147,9 @@ def webhook():
 
         print(currentmessage)
         print(len(currentmessage))
-        if len(currentmessage) == 2 and currentmessage[-1] == 'teams':
-            print(currentmessage[0].capitalize())
+        cur_message_split = currentmessage.str.split()
+        if len(cur_message_split) == 2 and cur_message_split[-1] == 'teams':
+            print(cur_message_split[0].capitalize())
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
