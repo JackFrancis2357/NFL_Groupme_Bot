@@ -1,7 +1,6 @@
-import sqlite3 as sql
-
 import yaml
 
+from helpers.sql_lib import check_or_create_table, _get_sql_connection
 from testing_nfl_espn import jack_teams, jordan_teams, nate_teams, patrick_teams, nfl_results_df
 
 
@@ -10,13 +9,9 @@ from testing_nfl_espn import jack_teams, jordan_teams, nate_teams, patrick_teams
 #########################
 
 
-def get_sql_connection():
-    return sql.connect("history.db")
-
-
 def migrate_team_owners(teams, owner, season):
 
-    with get_sql_connection() as conn:
+    with _get_sql_connection() as conn:
         cursor = conn.cursor()
 
         for team in teams:
@@ -31,15 +26,10 @@ def migrate_team_records(team_mapping, season):
         team_dict = team_mapping["TEAMS"][team]
         team_result = nfl_results_df[nfl_results_df["Team Name"] == team_dict["Abbrev"]]
 
-        with get_sql_connection() as conn:
+        with _get_sql_connection() as conn:
             cursor = conn.cursor()
             cursor.execute(f"INSERT INTO seasons (season, team, abbrev, division, conference, wins, losses, ties) VALUES ('{season}', '{team}', '{team_dict['Abbrev']}', '{team_dict['Division']}', '{team_dict['Conference']}', '{team_result['Wins'].iloc[0]}', '{team_result['Losses'].iloc[0]}', '{team_result['Ties'].iloc[0]}');")
             conn.commit()
-
-
-def check_or_create_table(query):
-    conn = get_sql_connection()
-    conn.execute(query)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,9 @@ from lxml import html
 from flask import Flask, request
 
 from configs import Config
+from helpers import setup_logger
+
+setup_logger.config_logger()
 
 app = Flask(__name__)
 
@@ -177,7 +180,7 @@ def webhook():
         elif currentmessage == "all teams":
             return_contestant('All')
         elif currentmessage == 'nfl bot help':
-            options = configs.base_configs['Responses']
+            options = Config['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
