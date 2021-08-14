@@ -1,5 +1,6 @@
 import pandas as pd
 from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value
+from groupme_bot_functions import get_standings
 
 
 def get_homepage_data(current_week):
@@ -54,3 +55,23 @@ def get_homepage_data(current_week):
     owner_matchups_columns.insert(0, 'Table')
 
     return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns
+
+
+def get_homepage_standings():
+    standings = get_standings()
+
+    standings = standings.drop(['Team'], axis=1)
+    standings = standings.groupby(by='Name').sum().reset_index()
+    standings_columns = standings.columns.tolist()
+    standings_docs = []
+    for i in range(standings.shape[0]):
+        doc = {
+            'owner': standings.iloc[i, 0],
+            'owner_color': get_owner_hex_value(standings.iloc[i, 0].lower()),
+            'wins': standings.iloc[i, 1],
+            'losses': standings.iloc[i, 2],
+            'ties': standings.iloc[i, 3]
+
+        }
+        standings_docs.append(doc)
+    return standings_docs, standings_columns

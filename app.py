@@ -10,7 +10,7 @@ from flask_login import LoginManager, login_user, login_required, UserMixin
 
 import configs
 from app_helper_functions import get_team_list, get_team_abb, get_team_owner, get_owner_hex_value, get_teams
-from get_homepage_data import get_homepage_data
+from get_homepage_data import get_homepage_data, get_homepage_standings
 from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings
 
 app = Flask(__name__)
@@ -32,10 +32,12 @@ Session(app)
 def homepage():
     week = 3
     matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns = get_homepage_data(week)
+    standings_docs, standings_columns = get_homepage_standings()
 
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=matchups_columns,
                            matchups_two=matchups_two, owner_matchups=owner_matchups,
-                           owner_matchups_columns=owner_matchups_columns)
+                           owner_matchups_columns=owner_matchups_columns,
+                           standings = standings_docs, standings_columns = standings_columns)
 
 
 @app.route('/groupmebot', methods=['POST'])

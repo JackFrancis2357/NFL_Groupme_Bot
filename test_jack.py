@@ -11,15 +11,36 @@
 # test.insert(0, 'Table')
 # print(test)
 
-import configs
+# import configs
+#
+# def get_teams():
+#     jack_teams = configs.base_configs['Jack']
+#     jordan_teams = configs.base_configs['Jordan']
+#     nathan_teams = configs.base_configs['Nathan']
+#     patrick_teams = configs.base_configs['Patrick']
+#
+#     return jack_teams, jordan_teams, nathan_teams, patrick_teams
+#
+# test = get_teams()
+# print(test)
 
-def get_teams():
-    jack_teams = configs.base_configs['Jack']
-    jordan_teams = configs.base_configs['Jordan']
-    nathan_teams = configs.base_configs['Nathan']
-    patrick_teams = configs.base_configs['Patrick']
+from groupme_bot_functions import get_standings, get_standings_message
 
-    return jack_teams, jordan_teams, nathan_teams, patrick_teams
+import pandas as pd
+test = pd.read_csv('test_standings.csv', index_col=0)
 
-test = get_teams()
-print(test)
+test = test.drop(['Team'], axis=1)
+test = test.groupby(by='Name').sum().reset_index()
+print(test.columns.tolist())
+standings_docs = []
+for i in range(test.shape[0]):
+    doc = {
+        'Name': test.iloc[i, 0],
+        'Wins': test.iloc[i, 1],
+        'Losses': test.iloc[i, 2],
+        'Ties': test.iloc[i, 3]
+
+    }
+    print(doc)
+for i in range(test.shape[0]):
+    print(test.iloc[i, 1])
