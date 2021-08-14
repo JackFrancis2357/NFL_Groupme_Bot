@@ -51,11 +51,13 @@ def get_standings_message(standings):
 
 
 def get_team_data_espn(tree, base_xpath, i, conference_div):
-    cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-
-    if len(cur_team_data[0].text_content()) < 4:
-        cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
-    team_name = cur_team_data[0].text_content()
+    try:
+        cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
+        if len(cur_team_data[0].text_content()) < 4:
+            cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
+        team_name = cur_team_data[0].text_content()
+    except IndexError:
+        return 'error', '', '', ''
 
     cur_team_wins = tree.xpath(
         f'{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
@@ -82,12 +84,16 @@ def get_standings():
     # AFC Teams
     for i in range(1, 21):
         team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=1)
+        if team_name == 'error':
+            continue
         nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
     # NFC Teams
     for i in range(1, 21):
         team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=2)
+        if team_name == 'error':
+            continue
         nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
