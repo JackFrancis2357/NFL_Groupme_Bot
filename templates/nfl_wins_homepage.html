@@ -12,8 +12,27 @@
             <tbody>
             {%- for row in matchups %}
                 <tr>
-                    <td> {{ row.Away }}</td>
-                    <td> {{ row.Home }}</td>
+                    <td class='text-center' style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}</td>
+                    <td class='text-center' style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}</td>
+                </tr>
+            {%- endfor %}
+            </tbody>
+        </table>
+        <table class="table table-striped">
+            <thead>
+            {%- for column in owner_matchups_columns %}
+                <th>{{ column }}</th>
+            {%- endfor %}
+            </thead>
+
+            <tbody>
+            {%- for row in owner_matchups %}
+                <tr>
+                    <td class='text-center' style="background-color: {{ row.owner_color }}"> {{ row.owner }}</td>
+                    <td class='text-center'> {{ row.jack }}</td>
+                    <td class='text-center'> {{ row.jordan }}</td>
+                    <td class='text-center'> {{ row.patrick }}</td>
+                    <td class='text-center'> {{ row.nathan }}</td>
                 </tr>
             {%- endfor %}
             </tbody>

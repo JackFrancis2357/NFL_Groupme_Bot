@@ -24,23 +24,105 @@ Session(app)
 # login_manager.init_app(app)
 # login_manager.login_view = ''
 
+def get_team_list(teams_list):
+    team_abb_list = []
+    for team in teams_list:
+        team_abb_list.append(configs.team_mapping_configs[team][0])
+    return team_abb_list
+
+
+def get_team_abb():
+    jack_teams = configs.base_configs['Jack']
+    jordan_teams = configs.base_configs['Jordan']
+    nathan_teams = configs.base_configs['Nathan']
+    patrick_teams = configs.base_configs['Patrick']
+
+    jack_t = get_team_list(jack_teams)
+    jordan_t = get_team_list(jordan_teams)
+    nathan_t = get_team_list(nathan_teams)
+    patrick_t = get_team_list(patrick_teams)
+
+    return jack_t, jordan_t, patrick_t, nathan_t
+
+
+def get_owner_hex_value(name):
+    if name == 'jack':
+        return '#59FF00'
+    elif name == 'jordan':
+        return '#FF0000'
+    elif name == 'patrick':
+        return '#0000FF'
+    elif name == 'nathan':
+        return '#FFFF00'
+
+
+def get_team_owner(team, ja_t, jo_t, pa_t, na_t):
+    if team in ja_t:
+        name = 'jack'
+        return name, get_owner_hex_value(name)
+    elif team in jo_t:
+        name = 'jordan'
+        return name, get_owner_hex_value(name)
+    elif team in pa_t:
+        name = 'patrick'
+        return name, get_owner_hex_value(name)
+    elif team in na_t:
+        name = 'nathan'
+        return name, get_owner_hex_value(name)
+    else:
+        return 'whoops'
+
+
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    current_week = 1
+    current_week = 3
     matchups_df = pd.read_csv('./Weekly_Matchups.csv')
     current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
     away_home_teams = current_matchups.str.split(pat='at', expand=True)
     away_home_teams.columns = ['Away', 'Home']
+    away_home_teams['Away'] = away_home_teams['Away'].map(lambda x: x.rstrip())
+    away_home_teams['Home'] = away_home_teams['Home'].map(lambda x: x.lstrip())
 
+    ja_t, jo_t, pa_t, na_t = get_team_abb()
+    weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'patrick', 'nathan'],
+                                      columns=['jack', 'jordan', 'patrick', 'nathan'])
     matchups = []
     for i in range(away_home_teams.shape[0]):
+        away_team = away_home_teams['Away'][i]
+        home_team = away_home_teams['Home'][i]
+        away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, pa_t, na_t)
+        home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, pa_t, na_t)
+
         doc = {
-            'Away': away_home_teams['Away'][i],
-            'Home': away_home_teams['Home'][i]
+            'Away': away_team,
+            'Away_Owner': away_color,
+            'Home': home_team,
+            'Home_Owner': home_color
         }
         matchups.append(doc)
 
-    return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'])
+        weekly_matchups_df.loc[away_owner, home_owner] += 1
+        weekly_matchups_df.loc[home_owner, away_owner] += 1
+
+    owner_matchups = []
+    for i in range(weekly_matchups_df.shape[0]):
+        weekly_matchups_df.iloc[i, i] /= 2
+        doc = {
+            'owner': weekly_matchups_df.columns[i],
+            'owner_color': get_owner_hex_value(weekly_matchups_df.columns[i]),
+            'jack': weekly_matchups_df.iloc[i, 0],
+            'jordan': weekly_matchups_df.iloc[i, 1],
+            'patrick': weekly_matchups_df.iloc[i, 2],
+            'nathan': weekly_matchups_df.iloc[i, 3],
+        }
+        owner_matchups.append(doc)
+
+    owner_matchups_columns = weekly_matchups_df.columns
+    owner_matchups_columns = owner_matchups_columns.insert(0, 'Table')
+    print(owner_matchups_columns)
+
+    return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'],
+                           owner_matchups=owner_matchups, owner_matchups_columns=owner_matchups_columns)
 
 
 @app.route('/groupmebot', methods=['POST'])
@@ -66,7 +148,6 @@ def webhook():
 
     # json we receive for every message in the chat
     data = request.get_json()
-    print(data)
 
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
@@ -74,8 +155,6 @@ def webhook():
         'https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
     # Keeping commented to test out other functionality for a minute
     groupme_users = dict()
-    print(user_json)
-    print(os.getenv('TOKEN'))
     for member in user_json['response']['members']:
         groupme_users.update({member['user_id']: member['name']})
 
@@ -253,11 +332,11 @@ def send_message(msg):
     return response.status_code
 
 
-if __name__ == '__main__':
-    app.run()
-# if __name__ == "__main__":
-#     try:
-#         session.clear()
-#     except:
-#         pass
-#     app.run(port=6432, debug=True)
+# if __name__ == '__main__':
+#     app.run()
+if __name__ == "__main__":
+    try:
+        session.clear()
+    except:
+        pass
+    app.run(port=6432, debug=True)
