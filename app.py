@@ -119,7 +119,6 @@ def homepage():
 
     owner_matchups_columns = weekly_matchups_df.columns
     owner_matchups_columns = owner_matchups_columns.insert(0, 'Table')
-    print(owner_matchups_columns)
 
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'],
                            owner_matchups=owner_matchups, owner_matchups_columns=owner_matchups_columns)
