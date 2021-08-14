@@ -249,6 +249,8 @@ def webhook():
                                    ['Jack', 'Jordan', 'Nathan', 'Patrick']):
             name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
 
+        print(name_team)
+        print(nfl_results_df)
         standings = name_team.merge(nfl_results_df, how='left', on='Team')
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
