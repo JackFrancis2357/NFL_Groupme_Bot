@@ -47,13 +47,13 @@ def get_team_abb():
 
 def get_owner_hex_value(name):
     if name == 'jack':
-        return '#59FF00'
+        return '#41B3A3'
     elif name == 'jordan':
-        return '#FF0000'
+        return '#E8A87C'
     elif name == 'patrick':
-        return '#0000FF'
+        return '#C38D9E'
     elif name == 'nathan':
-        return '#FFFF00'
+        return '#E27D60'
 
 
 def get_team_owner(team, ja_t, jo_t, pa_t, na_t):
