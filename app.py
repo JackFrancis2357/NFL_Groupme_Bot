@@ -9,6 +9,9 @@ from flask_session import Session
 from flask_login import LoginManager, login_user, login_required, UserMixin
 
 import configs
+from app_helper_functions import get_team_list, get_team_abb, get_team_owner, get_owner_hex_value
+from get_homepage_data import get_homepage_data
+from groupme_bot_functions import return_contestant, send_message
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -24,109 +27,15 @@ Session(app)
 # login_manager.init_app(app)
 # login_manager.login_view = ''
 
-def get_team_list(teams_list):
-    team_abb_list = []
-    for team in teams_list:
-        team_abb_list.append(configs.team_mapping_configs[team][0])
-    return team_abb_list
-
-
-def get_team_abb():
-    jack_teams = configs.base_configs['Jack']
-    jordan_teams = configs.base_configs['Jordan']
-    nathan_teams = configs.base_configs['Nathan']
-    patrick_teams = configs.base_configs['Patrick']
-
-    jack_t = get_team_list(jack_teams)
-    jordan_t = get_team_list(jordan_teams)
-    nathan_t = get_team_list(nathan_teams)
-    patrick_t = get_team_list(patrick_teams)
-
-    return jack_t, jordan_t, patrick_t, nathan_t
-
-
-def get_owner_hex_value(name):
-    if name == 'jack':
-        return '#41B3A3'
-    elif name == 'jordan':
-        return '#E8A87C'
-    elif name == 'patrick':
-        return '#C38D9E'
-    elif name == 'nathan':
-        return '#E27D60'
-
-
-def get_team_owner(team, ja_t, jo_t, pa_t, na_t):
-    if team in ja_t:
-        name = 'jack'
-        return name, get_owner_hex_value(name)
-    elif team in jo_t:
-        name = 'jordan'
-        return name, get_owner_hex_value(name)
-    elif team in pa_t:
-        name = 'patrick'
-        return name, get_owner_hex_value(name)
-    elif team in na_t:
-        name = 'nathan'
-        return name, get_owner_hex_value(name)
-    else:
-        return 'whoops'
-
 
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    current_week = 3
-    matchups_df = pd.read_csv('./Weekly_Matchups.csv')
-    current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
-    away_home_teams = current_matchups.str.split(pat='at', expand=True)
-    away_home_teams.columns = ['Away', 'Home']
-    away_home_teams['Away'] = away_home_teams['Away'].map(lambda x: x.rstrip())
-    away_home_teams['Home'] = away_home_teams['Home'].map(lambda x: x.lstrip())
+    week = 3
+    matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns = get_homepage_data(week)
 
-    ja_t, jo_t, pa_t, na_t = get_team_abb()
-    weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'patrick', 'nathan'],
-                                      columns=['jack', 'jordan', 'patrick', 'nathan'])
-    matchups = []
-    matchups_two = []
-    for i in range(away_home_teams.shape[0]):
-        away_team = away_home_teams['Away'][i]
-        home_team = away_home_teams['Home'][i]
-        away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, pa_t, na_t)
-        home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, pa_t, na_t)
-
-        doc = {
-            'Away': away_team,
-            'Away_Owner': away_color,
-            'Home': home_team,
-            'Home_Owner': home_color
-        }
-        if i < 8:
-            matchups.append(doc)
-        else:
-            matchups_two.append(doc)
-
-        weekly_matchups_df.loc[away_owner, home_owner] += 1
-        weekly_matchups_df.loc[home_owner, away_owner] += 1
-
-    owner_matchups = []
-    for i in range(weekly_matchups_df.shape[0]):
-        weekly_matchups_df.iloc[i, i] /= 2
-        doc = {
-            'owner': weekly_matchups_df.columns[i].capitalize(),
-            'owner_color': get_owner_hex_value(weekly_matchups_df.columns[i]),
-            'jack': weekly_matchups_df.iloc[i, 0],
-            'jordan': weekly_matchups_df.iloc[i, 1],
-            'patrick': weekly_matchups_df.iloc[i, 2],
-            'nathan': weekly_matchups_df.iloc[i, 3],
-        }
-        owner_matchups.append(doc)
-
-    owner_matchups_columns = [x.capitalize() for x in weekly_matchups_df.columns.tolist()]
-    owner_matchups_columns.insert(0, 'Table')
-
-    return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'],
-                           matchups_two = matchups_two,
-                           owner_matchups=owner_matchups, owner_matchups_columns=owner_matchups_columns)
+    return render_template('nfl_wins_homepage.html', matchups=matchups, columns=matchups_columns,
+                           matchups_two=matchups_two, owner_matchups=owner_matchups,
+                           owner_matchups_columns=owner_matchups_columns)
 
 
 @app.route('/groupmebot', methods=['POST'])
@@ -168,26 +77,6 @@ def webhook():
 
     # current message to be parsed
     currentmessage = data['text'].lower().strip()
-
-    def return_contestant(name=str):
-        if name == 'All':
-            teams = standings.loc[:, 'Team'].tolist()
-            wins = [int(i) for i in standings.loc[:, 'Wins'].tolist()]
-            losses = [int(i) for i in standings.loc[:, 'Losses'].tolist()]
-            message = str()
-            for i in range(0, len(teams)):
-                message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
-
-            return send_message(message)
-        else:
-            teams = standings.loc[standings['Name'] == name, 'Team'].tolist()
-            wins = [int(i) for i in standings.loc[standings['Name'] == name, 'Wins'].tolist()]
-            losses = [int(i) for i in standings.loc[standings['Name'] == name, 'Losses'].tolist()]
-            message = str()
-            for i in range(0, len(teams)):
-                message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
-
-            return send_message(message)
 
     # Only if message is something we want to reply to do we request data from ESPN
     if currentmessage in configs.base_configs['Responses']:
@@ -256,6 +145,11 @@ def webhook():
 
         standings = name_team.merge(nfl_results_df, how='left', on='Team')
 
+        print(currentmessage)
+        print(len(currentmessage))
+        if len(currentmessage) == 2 and currentmessage[-1] == 'teams':
+            print(currentmessage[0].capitalize())
+
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if currentmessage == 'standings':
             names = standings['Name'].unique().tolist()
@@ -282,6 +176,8 @@ def webhook():
             return send_message(message.upper())
 
         # Message options - either all teams, a player's teams, or print help
+
+
         elif currentmessage == "patrick teams":
             return_contestant('Patrick')
         elif currentmessage == "jordan teams":
