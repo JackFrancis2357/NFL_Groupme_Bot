@@ -147,7 +147,7 @@ def webhook():
 
         print(currentmessage)
         print(len(currentmessage))
-        cur_message_split = currentmessage.str.split()
+        cur_message_split = currentmessage.split()
         if len(cur_message_split) == 2 and cur_message_split[-1] == 'teams':
             print(cur_message_split[0].capitalize())
 
