@@ -161,7 +161,9 @@ def webhook():
                 message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
             print(message)
 
-            return send_message(message)
+            send_message(message)
+
+            return 'test'
 
         elif currentmessage == 'mother fucking standings':
             names = standings['Name'].unique().tolist()
