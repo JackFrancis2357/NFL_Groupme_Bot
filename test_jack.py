@@ -57,3 +57,5 @@ from groupme_bot_functions import get_standings, get_standings_message
 # test = datetime.datetime.strptime('09/28/2021', '%m/%d/%Y')
 # delta = test - datetime_object
 # print(int(np.floor(delta.days / 7) + 1))
+
+'afdlkf'
