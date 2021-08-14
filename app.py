@@ -108,7 +108,7 @@ def homepage():
     for i in range(weekly_matchups_df.shape[0]):
         weekly_matchups_df.iloc[i, i] /= 2
         doc = {
-            'owner': weekly_matchups_df.columns[i],
+            'owner': weekly_matchups_df.columns[i].capitalize(),
             'owner_color': get_owner_hex_value(weekly_matchups_df.columns[i]),
             'jack': weekly_matchups_df.iloc[i, 0],
             'jordan': weekly_matchups_df.iloc[i, 1],
@@ -117,8 +117,8 @@ def homepage():
         }
         owner_matchups.append(doc)
 
-    owner_matchups_columns = weekly_matchups_df.columns
-    owner_matchups_columns = owner_matchups_columns.insert(0, 'Table')
+    owner_matchups_columns = [x.capitalize() for x in weekly_matchups_df.columns.tolist()]
+    owner_matchups_columns.insert(0, 'Table')
 
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'],
                            owner_matchups=owner_matchups, owner_matchups_columns=owner_matchups_columns)
