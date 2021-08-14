@@ -114,3 +114,8 @@ gm_creds.py
 
 # Idea folder
 .idea
+
+# Jack testing
+test_jack.py
+Old_Code/
+flask_session/
