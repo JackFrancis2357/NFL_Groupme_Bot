@@ -66,6 +66,7 @@ def webhook():
 
     # json we receive for every message in the chat
     data = request.get_json()
+    print(data)
 
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
@@ -74,6 +75,7 @@ def webhook():
     # Keeping commented to test out other functionality for a minute
     groupme_users = dict()
     print(user_json)
+    print(os.getenv('TOKEN'))
     for member in user_json['response']['members']:
         groupme_users.update({member['user_id']: member['name']})
 
