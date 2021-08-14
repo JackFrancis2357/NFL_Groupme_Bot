@@ -249,9 +249,9 @@ def send_message(msg):
     return response.status_code
 
 
-if __name__ == "__main__":
-    try:
-        session.clear()
-    except:
-        pass
-    app.run(port=6432, debug=True)
+# if __name__ == "__main__":
+#     try:
+#         session.clear()
+#     except:
+#         pass
+#     app.run(port=6432, debug=True)
