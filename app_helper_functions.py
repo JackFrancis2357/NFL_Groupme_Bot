@@ -1,5 +1,6 @@
 import configs
-
+import datetime
+import numpy as np
 
 def get_team_list(teams_list):
     team_abb_list = []
@@ -54,3 +55,10 @@ def get_team_owner(team, ja_t, jo_t, pa_t, na_t):
         return name, get_owner_hex_value(name)
     else:
         return 'whoops'
+
+
+def get_current_week():
+    nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
+    cur_date = datetime.datetime.today()
+    delta = cur_date - nfl_season_start
+    return max(1, int(np.floor(delta.days / 7) + 1))

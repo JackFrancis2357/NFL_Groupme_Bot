@@ -6,7 +6,7 @@ from flask_bootstrap import Bootstrap
 from flask_session import Session
 
 import configs
-from app_helper_functions import get_teams
+from app_helper_functions import get_teams, get_current_week
 from get_homepage_data import get_homepage_data, get_homepage_standings
 from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings
 
@@ -21,7 +21,7 @@ Session(app)
 
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
-    week = 3
+    week = get_current_week()
     matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns = get_homepage_data(week)
     standings_docs, standings_columns = get_homepage_standings()
 
@@ -97,8 +97,6 @@ def webhook():
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
-        # elif currentmessage == 'my teams':
-        #     return_contestant(groupme_users[currentuser].split()[0])
     elif currentmessage[:4].lower() == '!who':
         # I think this can be teams_list = [get_teams()] but will test later
         jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
