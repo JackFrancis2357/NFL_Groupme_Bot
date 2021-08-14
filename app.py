@@ -119,6 +119,8 @@ def webhook():
                 for team in teams_list[owner]:
                     if team_id in team:
                         return send_message(names[owner])
+    elif currentmessage == 'weblink':
+        return send_message('https://nfl-groupme-flask-bot.herokuapp.com')
 
 
 # if __name__ == '__main__':
