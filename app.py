@@ -90,7 +90,7 @@ def webhook():
             name = currentmessage.split()[0].capitalize()
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
-            elif name == 'my':
+            elif name == 'My':
                 return_contestant(groupme_users[currentuser].split()[0], standings)
         elif currentmessage == 'nfl bot help':
             options = configs.base_configs['Responses']
