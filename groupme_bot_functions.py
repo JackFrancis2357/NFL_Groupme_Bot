@@ -54,7 +54,8 @@ def get_team_data_espn(tree, base_xpath, i, conference_div):
     try:
         cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
         if len(cur_team_data[0].text_content()) < 4:
-            cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
+            cur_team_data = tree.xpath(
+                f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
         team_name = cur_team_data[0].text_content()
     except IndexError:
         return 'error', '', '', ''

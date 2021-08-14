@@ -2,6 +2,7 @@ import configs
 import datetime
 import numpy as np
 
+
 def get_team_list(teams_list):
     team_abb_list = []
     for team in teams_list:

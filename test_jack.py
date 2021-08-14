@@ -26,7 +26,7 @@
 
 from groupme_bot_functions import get_standings, get_standings_message
 
-#import pandas as pd
+# import pandas as pd
 # test = pd.read_csv('test_standings.csv', index_col=0)
 #
 # test = test.drop(['Team'], axis=1)
@@ -45,15 +45,15 @@ from groupme_bot_functions import get_standings, get_standings_message
 # for i in range(test.shape[0]):
 #     print(test.iloc[i, 1])
 
-import datetime
-import numpy as np
-
-from datetime import date
-
-today = datetime.datetime.today()
-print("Today's date:", today)
-
-datetime_object = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
-test = datetime.datetime.strptime('09/28/2021', '%m/%d/%Y')
-delta = test - datetime_object
-print(int(np.floor(delta.days / 7) + 1))
+# import datetime
+# import numpy as np
+#
+# from datetime import date
+#
+# today = datetime.datetime.today()
+# print("Today's date:", today)
+#
+# datetime_object = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
+# test = datetime.datetime.strptime('09/28/2021', '%m/%d/%Y')
+# delta = test - datetime_object
+# print(int(np.floor(delta.days / 7) + 1))
