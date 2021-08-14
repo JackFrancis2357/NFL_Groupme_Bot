@@ -14,7 +14,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'dogs-are-the-best'
 app.config['SESSION_TYPE'] = 'filesystem'
-# FLASK_DEBUG = True
+FLASK_DEBUG = True
 
 Session(app)
 
@@ -87,6 +87,7 @@ def homepage():
     weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'patrick', 'nathan'],
                                       columns=['jack', 'jordan', 'patrick', 'nathan'])
     matchups = []
+    matchups_two = []
     for i in range(away_home_teams.shape[0]):
         away_team = away_home_teams['Away'][i]
         home_team = away_home_teams['Home'][i]
@@ -99,7 +100,10 @@ def homepage():
             'Home': home_team,
             'Home_Owner': home_color
         }
-        matchups.append(doc)
+        if i < 8:
+            matchups.append(doc)
+        else:
+            matchups_two.append(doc)
 
         weekly_matchups_df.loc[away_owner, home_owner] += 1
         weekly_matchups_df.loc[home_owner, away_owner] += 1
@@ -121,6 +125,7 @@ def homepage():
     owner_matchups_columns.insert(0, 'Table')
 
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'],
+                           matchups_two = matchups_two,
                            owner_matchups=owner_matchups, owner_matchups_columns=owner_matchups_columns)
 
 
@@ -249,8 +254,6 @@ def webhook():
                                    ['Jack', 'Jordan', 'Nathan', 'Patrick']):
             name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
 
-        print(name_team)
-        print(nfl_results_df)
         standings = name_team.merge(nfl_results_df, how='left', on='Team')
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records

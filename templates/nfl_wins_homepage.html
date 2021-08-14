@@ -30,7 +30,7 @@
                     </thead>
 
                     <tbody>
-                    {%- for row in matchups %}
+                    {%- for row in matchups_two %}
                         <tr>
                             <td class='text-center'
                                 style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}</td>
@@ -63,6 +63,7 @@
                     </tbody>
                 </table>
             </div>
+
 
             <div class="row">
                 {% if error %}
