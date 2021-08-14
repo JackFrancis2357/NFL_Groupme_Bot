@@ -18,6 +18,7 @@ FLASK_DEBUG = True
 
 Session(app)
 
+
 # Login code
 # login_manager = LoginManager()
 # login_manager.init_app(app)
@@ -40,6 +41,7 @@ def homepage():
         matchups.append(doc)
 
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=['Away', 'Home'])
+
 
 @app.route('/groupmebot', methods=['POST'])
 def webhook():
