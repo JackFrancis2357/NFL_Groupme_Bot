@@ -50,6 +50,27 @@ def get_standings_message(standings):
     return (message)
 
 
+def get_team_data_espn(tree, base_xpath, i, conference_div):
+    cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
+
+    if len(cur_team_data[0].text_content()) < 4:
+        cur_team_data = tree.xpath(f'{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
+    team_name = cur_team_data[0].text_content()
+
+    cur_team_wins = tree.xpath(
+        f'{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
+    cur_team_loss = tree.xpath(
+        f'{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
+    cur_team_tie = tree.xpath(
+        f'{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
+
+    wins = int(cur_team_wins[0].text_content())
+    losses = int(cur_team_loss[0].text_content())
+    ties = int(cur_team_tie[0].text_content())
+
+    return team_name, wins, losses, ties
+
+
 def get_standings():
     r = requests.get("https://www.espn.com/nfl/standings")
     tree = html.fromstring(r.content)
@@ -60,45 +81,13 @@ def get_standings():
     ctr = 0
     # AFC Teams
     for i in range(1, 21):
-
-        try:
-            # Try to get team name - if playoff code has been added, span[3] is ARI; span[4] is Arizona Cardinals
-            cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-
-            if len(cur_team_data[0].text_content()) < 4:
-                cur_team_data = tree.xpath(f'{base_xpath}div[1]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
-            team_name = cur_team_data[0].text_content()
-        except:
-            continue
-
-        cur_team_wins = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
-        cur_team_loss = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
-        cur_team_tie = tree.xpath(f'{base_xpath}div[1]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
-
-        wins = int(cur_team_wins[0].text_content())
-        losses = int(cur_team_loss[0].text_content())
-        ties = int(cur_team_tie[0].text_content())
+        team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=1)
         nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
     # NFC Teams
     for i in range(1, 21):
-        cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-        try:
-            cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a')
-            if len(cur_team_data[0].text_content()) < 4:
-                cur_team_data = tree.xpath(f'{base_xpath}div[2]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a')
-            team_name = cur_team_data[0].text_content()
-        except:
-            continue
-
-        cur_team_wins = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span')
-        cur_team_loss = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span')
-        cur_team_tie = tree.xpath(f'{base_xpath}div[2]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span')
-
-        wins = int(cur_team_wins[0].text_content())
-        losses = int(cur_team_loss[0].text_content())
-        ties = int(cur_team_tie[0].text_content())
+        team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=2)
         nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
