@@ -73,7 +73,7 @@ def webhook():
         'https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
     # Keeping commented to test out other functionality for a minute
     groupme_users = dict()
-    print(user_json['response'])
+    print(user_json)
     for member in user_json['response']['members']:
         groupme_users.update({member['user_id']: member['name']})
 
