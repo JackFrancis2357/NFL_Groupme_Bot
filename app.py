@@ -27,7 +27,7 @@ Session(app)
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     current_week = 1
-    matchups_df = pd.read_csv('Weekly_Matchups.csv')
+    matchups_df = pd.read_csv('./Weekly_Matchups.csv')
     current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
     away_home_teams = current_matchups.str.split(pat='at', expand=True)
     away_home_teams.columns = ['Away', 'Home']
