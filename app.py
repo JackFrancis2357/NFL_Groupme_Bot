@@ -1,15 +1,12 @@
 import os
 import requests
-import pandas as pd
-from lxml import html
 
-from flask import Flask, redirect, url_for, request, session, render_template, make_response
+from flask import Flask, request, session, render_template
 from flask_bootstrap import Bootstrap
 from flask_session import Session
-from flask_login import LoginManager, login_user, login_required, UserMixin
 
 import configs
-from app_helper_functions import get_team_list, get_team_abb, get_team_owner, get_owner_hex_value, get_teams
+from app_helper_functions import get_teams
 from get_homepage_data import get_homepage_data, get_homepage_standings
 from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings
 
@@ -22,12 +19,6 @@ FLASK_DEBUG = True
 Session(app)
 
 
-# Login code
-# login_manager = LoginManager()
-# login_manager.init_app(app)
-# login_manager.login_view = ''
-
-
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     week = 3
@@ -37,7 +28,7 @@ def homepage():
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=matchups_columns,
                            matchups_two=matchups_two, owner_matchups=owner_matchups,
                            owner_matchups_columns=owner_matchups_columns,
-                           standings = standings_docs, standings_columns = standings_columns)
+                           standings=standings_docs, standings_columns=standings_columns)
 
 
 @app.route('/groupmebot', methods=['POST'])
@@ -99,13 +90,15 @@ def webhook():
             name = currentmessage.split()[0].capitalize()
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
+            elif name == 'my':
+                return_contestant(groupme_users[currentuser].split()[0], standings)
         elif currentmessage == 'nfl bot help':
             options = configs.base_configs['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
-        elif currentmessage == 'my teams':
-            return_contestant(groupme_users[currentuser].split()[0])
+        # elif currentmessage == 'my teams':
+        #     return_contestant(groupme_users[currentuser].split()[0])
     elif currentmessage[:4].lower() == '!who':
         # I think this can be teams_list = [get_teams()] but will test later
         jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
