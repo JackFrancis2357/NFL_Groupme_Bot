@@ -71,9 +71,10 @@ def webhook():
     currentuser = data['user_id']
     user_json = requests.get(
         'https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
-    groupme_users = dict()
-    for member in user_json['response']['members']:
-        groupme_users.update({member['user_id']: member['name']})
+    # Keeping commented to test out other functionality for a minute
+    # groupme_users = dict()
+    # for member in user_json['response']['members']:
+    #     groupme_users.update({member['user_id']: member['name']})
 
     # make sure the bot never replies to itself
     if currentuser == os.getenv('GROUPME_BOT_ID'):
