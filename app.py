@@ -14,7 +14,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = 'dogs-are-the-best'
 app.config['SESSION_TYPE'] = 'filesystem'
-FLASK_DEBUG = True
+# FLASK_DEBUG = True
 
 Session(app)
 
@@ -249,6 +249,8 @@ def send_message(msg):
     return response.status_code
 
 
+if __name__ == '__main__':
+    app.run()
 # if __name__ == "__main__":
 #     try:
 #         session.clear()
