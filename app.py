@@ -12,7 +12,7 @@ from groupme_bot_functions import return_contestant, send_message, get_standings
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
-app.config['SECRET_KEY'] = 'dogs-are-the-best'
+app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET')
 app.config['SESSION_TYPE'] = 'filesystem'
 FLASK_DEBUG = True
 
@@ -80,7 +80,7 @@ def webhook():
             message = get_standings_message(standings)
             return send_message(message)
 
-        elif currentmessage == 'mother fucking standings':
+        elif currentmessage == 'standings right now':
             message = get_standings_message(standings)
             return send_message(message.upper())
 
