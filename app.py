@@ -124,8 +124,6 @@ def webhook():
     elif split_current_message[0] == 'schedule':
         if len(split_current_message) == 1:
             return ''
-        elif split_current_message[1] == 'bitches':
-            return send_message('Nathan why do you doubt the power of the all knowing NFL Win Tracker Bot. Bow down to me.'.upper())
         else:
             team_id = split_current_message[1].capitalize()
             starting_week = get_current_week()
