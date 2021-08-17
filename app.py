@@ -114,13 +114,6 @@ def webhook():
                         return send_message(names[owner])
     elif currentmessage == 'weblink':
         return send_message('https://nfl-groupme-flask-bot.herokuapp.com')
-    elif len(split_current_message) > 2:
-        if split_current_message[0] == 'schedule' and split_current_message[2] == 'next' and \
-                split_current_message[3].isdigit():
-            team_id = split_current_message[1].capitalize()
-            starting_week = get_current_week()
-            finishing_week = starting_week + int(split_current_message[3])
-            get_schedule(team_id, starting_week, finishing_week)
     elif split_current_message[0] == 'schedule':
         if len(split_current_message) == 1:
             return ''
