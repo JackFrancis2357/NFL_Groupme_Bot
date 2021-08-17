@@ -3,6 +3,7 @@ import requests
 import pandas as pd
 from lxml import html
 from app_helper_functions import get_teams
+import configs
 
 
 def send_message(msg):
@@ -110,3 +111,24 @@ def get_standings():
     standings = name_team.merge(nfl_results_df, how='left', on='Team')
 
     return standings
+
+
+def get_schedule(team_id, starting_week, finishing_week=18):
+    for k, v in configs.team_mapping_configs.items():
+        if team_id in k:
+            team_abbreviation = v[0]
+
+    nfl_schedule_df = pd.read_csv('./2021_NFL_Schedule_Grid.csv')
+    try:
+        schedule = nfl_schedule_df.loc[nfl_schedule_df['Team'] == team_abbreviation]
+    except:
+        return ''
+
+    schedule_columns = schedule.columns.tolist()[starting_week:finishing_week]
+    opponents = [x for x in schedule.iloc[0, starting_week:finishing_week]]
+
+    message = ''
+    for col, opp in zip(schedule_columns, opponents):
+        message += col + ': ' + opp + '\n'
+
+    return send_message(message)
