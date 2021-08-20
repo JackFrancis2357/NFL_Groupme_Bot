@@ -8,7 +8,7 @@ from flask_session import Session
 import configs
 from app_helper_functions import get_teams, get_current_week
 from get_homepage_data import get_homepage_data, get_homepage_standings
-from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings
+from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings, get_schedule
 
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
@@ -70,6 +70,7 @@ def webhook():
 
     # current message to be parsed
     currentmessage = data['text'].lower().strip()
+    split_current_message = currentmessage.split()
 
     # Only if message is something we want to reply to do we request data from ESPN
     if currentmessage in configs.base_configs['Responses']:
@@ -86,7 +87,7 @@ def webhook():
 
         # Message options - either all teams, a player's teams, or print help
 
-        elif len(currentmessage.split()) == 2 and currentmessage.split()[-1] == 'teams':
+        elif len(split_current_message) == 2 and split_current_message[-1] == 'teams':
             name = currentmessage.split()[0].capitalize()
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
@@ -97,6 +98,7 @@ def webhook():
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
+
     elif currentmessage[:4].lower() == '!who':
         # I think this can be teams_list = [get_teams()] but will test later
         jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
@@ -112,6 +114,19 @@ def webhook():
                         return send_message(names[owner])
     elif currentmessage == 'weblink':
         return send_message('https://nfl-groupme-flask-bot.herokuapp.com')
+    elif split_current_message[0] == 'schedule':
+        if len(split_current_message) == 1:
+            return ''
+        else:
+            team_id = split_current_message[1].capitalize()
+            starting_week = get_current_week()
+            try:
+                if split_current_message[0] == 'schedule' and split_current_message[2] == 'next' and \
+                        split_current_message[3].isdigit():
+                    finishing_week = starting_week + int(split_current_message[3])
+            except IndexError:
+                finishing_week = 19
+            get_schedule(team_id, starting_week, finishing_week=finishing_week)
 
 
 # if __name__ == '__main__':
