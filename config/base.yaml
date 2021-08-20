@@ -1,3 +1,43 @@
+# Teams
+Jack:
+  - Baltimore Ravens
+  - Tennessee Titans
+  - New York Jets
+  - Miami Dolphins
+  - New England Patriots
+  - Atlanta Falcons
+  - San Francisco 49ers
+  - Arizona Cardinals
+
+Jordan:
+  - Jacksonville Jaguars
+  - Kansas City Chiefs
+  - Las Vegas Raiders
+  - Detroit Lions
+  - Minnesota Vikings
+  - Chicago Bears
+  - Dallas Cowboys
+  - Seattle Seahawks
+
+Patrick:
+  - Cincinnati Bengals
+  - Cleveland Browns
+  - Houston Texans
+  - Denver Broncos
+  - Green Bay Packers
+  - New Orleans Saints
+  - Philadelphia Eagles
+  - New York Giants
+
+Nathan:
+  - Pittsburgh Steelers
+  - Indianapolis Colts
+  - Buffalo Bills
+  - Los Angeles Chargers
+  - Carolina Panthers
+  - Tampa Bay Buccaneers
+  - Washington
+  - Los Angeles Rams
 
 Responses:
   - standings
@@ -9,5 +49,13 @@ Responses:
   - nfl bot help
   - my teams
 
+num_teams: 32
 espn_url: https://www.espn.com/nfl/standings/_/season/2021
 season: 2021
+group_id: 7867099
+dev_group_id: 59458329
+custom_draft_order:
+  - 9957374
+  - 13038894
+  - 13529310
+  - 17900487

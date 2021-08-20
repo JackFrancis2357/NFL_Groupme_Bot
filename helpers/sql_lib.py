@@ -19,7 +19,7 @@ def execute_query(query):
         except Exception as err:
             logging.error(f"Error executing query: {query}")
             logging.error(err)
-        return result
+        return result.fetchall()
 
 
 # TODO: Make this dynamic - pass in table name with fields and types and generate the query

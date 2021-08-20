@@ -6,12 +6,16 @@ import requests
 from lxml import html
 from flask import Flask, request
 
+from draft import Draft
 from configs import Config
-from helpers import setup_logger
+from helpers import groupme_lib, setup_logger
 
 setup_logger.config_logger()
 
 app = Flask(__name__)
+
+# object placeholder for the draft
+draft_instance = None
 
 
 @app.route('/', methods=['POST'])
@@ -37,19 +41,14 @@ def webhook():
 
     # json we receive for every message in the chat
     data = request.get_json()
+    logging.info(f"Received: {data}")
 
     # The user_id of the user who sent the most recently message
     currentuser = data['user_id']
-    user_json = requests.get(
-        f"https://api.groupme.com/v3/groups/{data['group_id']}?token={os.getenv('TOKEN')}"
-    ).json()
-    groupme_users = dict()
-
-    for member in user_json['response']['members']:
-        groupme_users.update({member['user_id']: member['name']})
+    groupme_users = groupme_lib.get_users()
 
     # make sure the bot never replies to itself
-    if currentuser == os.getenv('GROUPME_BOT_ID'):
+    if currentuser == os.getenv('DEV_BOT_ID'):
         return
 
     # current message to be parsed
@@ -74,6 +73,21 @@ def webhook():
                 message += teams[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
 
             return send_message(message)
+
+    ######################
+    ## 2021 DRAFT LOGIC ##
+    ######################
+    global draft_instance
+    if currentmessage.lower() == "start draft":
+        draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
+        return send_message(draft_instance.init_draft())
+
+    if currentmessage.lower().startswith("draft"):
+        # Don't let this get triggered without "start draft" first
+        if not draft_instance:
+            return
+
+        return draft_instance.make_selection(currentuser, currentmessage)
 
     # Only if message is something we want to reply to do we request data from ESPN
     if currentmessage in Config['Responses']:
@@ -129,10 +143,10 @@ def webhook():
             ctr += 1
 
         # TODO: Fix This
-        jack_teams = configs.base_configs['Jack']
-        jordan_teams = configs.base_configs['Jordan']
-        nathan_teams = configs.base_configs['Nathan']
-        patrick_teams = configs.base_configs['Patrick']
+        jack_teams = Config['Jack']
+        jordan_teams = Config['Jordan']
+        nathan_teams = Config['Nathan']
+        patrick_teams = Config['Patrick']
         all_teams = jack_teams + jordan_teams + patrick_teams + nathan_teams
 
         name_team = pd.DataFrame(columns=['Name', 'Team'])
@@ -187,10 +201,10 @@ def webhook():
         elif currentmessage == 'my teams':
             return_contestant(groupme_users[currentuser].split()[0])
     elif currentmessage[:4].lower() == '!who':
-        jack_teams = configs.base_configs['Jack']
-        jordan_teams = configs.base_configs['Jordan']
-        nathan_teams = configs.base_configs['Nathan']
-        patrick_teams = configs.base_configs['Patrick']
+        jack_teams = Config['Jack']
+        jordan_teams = Config['Jordan']
+        nathan_teams = Config['Nathan']
+        patrick_teams = Config['Patrick']
         teams_list = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
         names = ['Jack', 'Jordan', 'Nathan', 'Patrick']
         team_id = currentmessage[6:]
@@ -211,7 +225,7 @@ def send_message(msg):
     url = 'https://api.groupme.com/v3/bots/post'
 
     payload = {
-        'bot_id': os.getenv('GROUPME_BOT_ID'),
+        'bot_id': os.getenv('DEV_BOT_ID'),
         'text': msg
     }
 
@@ -221,3 +235,7 @@ def send_message(msg):
         print(e)
 
     return response.status_code
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

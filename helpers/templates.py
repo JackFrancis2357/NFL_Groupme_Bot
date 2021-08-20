@@ -10,3 +10,9 @@ draft_welcome_message = \
 
 draft_acknowledgment = \
     "With Pick No. {}, {} has selected the {}.\n\n{} is on the clock."
+
+draft_failure = \
+    "Invalid team selection - {} is not an option. Please try again.\n\nFor the full list of team names, " \
+    "say 'all teams'."
+
+end_message = ""
