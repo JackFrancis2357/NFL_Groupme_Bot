@@ -20,4 +20,4 @@ end_message = "All teams have been drafted! This concludes the {} draft - good l
 
 out_of_turn = "You cannot select out of turn! {} is on the clock."
 
-selection_taken = "{} has already been selected. For the list of drafted teams, say 'draft status'"
+selection_taken = "The {} have already been selected. For the list of drafted teams, say 'draft status'"

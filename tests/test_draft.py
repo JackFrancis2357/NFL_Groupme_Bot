@@ -6,7 +6,7 @@ os.chdir("/Users/Patrick/PycharmProjects/git-nfl-groupme-bot/NFL_Groupme_Bot")
 
 from draft import Draft
 
-with open("users.json", "r") as json_file:
+with open("tests/users.json", "r") as json_file:
     users = json.load(json_file)
 
 draft_instance = Draft(users)
@@ -19,4 +19,4 @@ for user in users:
         current_user = user
         break
 
-print(draft_instance.make_selection(current_user, "draft Indianapolis Colts"))
+print(draft_instance.make_selection(current_user, "draft Kansas City Chiefs"))
