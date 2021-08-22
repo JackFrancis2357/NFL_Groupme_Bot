@@ -16,32 +16,34 @@ def get_teams():
 
 def draft_team(user, team, season, position):
     """Enter the draft selection in the database."""
-    try:
-        _ = sql_lib.execute_query(f"INSERT INTO teams VALUES ({user}, {team}, {season}, {position});")
-    except Exception as err:
-        logging.error(f"Error adding draft selection to database - {err}")
-        raise err
+    _ = sql_lib.execute_query(f"INSERT INTO teams VALUES ('{user}', '{team}', '{season}', {position});")
+
+
+def check_team_draft_status(team, season):
+    """Check if a team has already been drafted this year."""
+    query = f"SELECT * FROM teams WHERE team='{team}' AND season='{season}';"
+    return True if sql_lib.execute_query(query) else False
 
 
 class Draft:
-    def __init__(self, participants, draft_order=None):
+    def __init__(self, participants, draft_order=None, snake=True):
         self.season = "2021"
         self.participants = participants
         self.draft_order = draft_order or self.set_draft_order()
         self.current_user = None
         self.team_count = 0
-        self.snake = False
+        self.snake = snake
 
     def init_draft(self):
-        self.current_user = self.set_current_drafter()
+        self.set_current_drafter()
 
         welcome_message = templates.draft_welcome_message.format(
             self.season,
-            self.draft_order[0],
-            self.draft_order[1],
-            self.draft_order[2],
-            self.draft_order[3],
-            self.draft_order[0]
+            self._get_username_by_id(self.draft_order[0]),
+            self._get_username_by_id(self.draft_order[1]),
+            self._get_username_by_id(self.draft_order[2]),
+            self._get_username_by_id(self.draft_order[3]),
+            self._get_username_by_id(self.draft_order[0])
         )
         return welcome_message
 
@@ -49,6 +51,7 @@ class Draft:
         """Randomly order participants for the draft."""
 
         rank = {}
+        logging.info("Randomizing draft order")
 
         # Assign each participant a random decimal
         for par in self.participants:
@@ -66,47 +69,83 @@ class Draft:
 
         return draft_order
 
-    # TODO: FIX
+    # TODO: This would be better done with a generator - research
     def set_current_drafter(self):
-        return next(iter(self.draft_order))
+        if not self.current_user:
+            self.current_user = self.draft_order[0]
+            logging.info(f"Current user set: {self.current_user}")
+            return
+
+        # Handle the snake draft scenario
+        if self.snake and self.current_user == self.draft_order[-1]:
+            # Reverse the draft order
+            logging.info("Reversing the draft order for snake")
+            self.draft_order = self.draft_order[::-1]
+            # Current user stays the same - snake
+            return
+
+        # Core draft indexing
+        for index in range(len(self.draft_order)):
+            if self.draft_order[index] == self.current_user:
+                self.current_user = self.draft_order[index + 1]
+                logging.info(f"Current user set: {self.current_user}")
+                return
 
     def make_selection(self, user, message):
 
+        logging.info(f"Received message: {message} from {user}")
+
         # Don't let a user draft out of turn
         if user["user_id"] != self.current_user:
-            return f"You cannot select out of turn! {self.current_user} is on the clock."
+            logging.info("User out of turn - returning message")
+            return templates.out_of_turn.format(
+                self._get_username_by_id(self.current_user)
+            )
 
         # Parse out a valid team
         selection = message.split("draft ")[1]
         teams = [team.upper() for team in get_teams()]
 
+        if check_team_draft_status(selection.upper(), self.season):
+            # TODO: Add draft status method
+            logging.info("Selection has already been taken - returning message")
+            return templates.selection_taken.format(selection)
+
         if selection.upper() in teams:
+            logging.info(f"Valid selection of: {selection.upper()}")
+            logging.info("Logging user selection in database")
             draft_team(
-                self.get_username_by_id(self.current_user),
+                self._get_username_by_id(self.current_user),
                 selection.upper(),
                 self.season,
                 self.team_count + 1
             )
 
             # Send a message to the group that the pick has been made
-            next_drafter = self.set_current_drafter()
+            # Use this variable to hold the user who picked - current user will now be the next up
+            # Reallyyyy need to refactor this at some point
+            pick_made_by = self._get_username_by_id(self.current_user)
+            self.set_current_drafter()
             self.team_count += 1
             ack_message = templates.draft_acknowledgment.format(
                 self.team_count,
-                self.current_user,
-                next_drafter
+                pick_made_by,
+                selection,
+                self._get_username_by_id(self.current_user)
             )
-            self.current_user = next_drafter
 
             # End the draft if all teams are drafted
             if self.team_count >= int(Config["num_teams"]):
-                return templates.end_message
+                logging.info("End of draft! Returning message")
+                return templates.end_message.format(self.season)
 
+            logging.info("Successful pick made - returning message")
             return ack_message
         else:
+            logging.info("Invalid selection received - returning message")
             return templates.draft_failure.format(selection)
 
-    def get_username_by_id(self, id):
+    def _get_username_by_id(self, id):
         """Helper method to get name given ID."""
         for user in self.participants:
             if user["user_id"] == id:

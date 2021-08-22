@@ -3,7 +3,7 @@ import sqlite3 as sql
 
 
 def _get_sql_connection():
-    return sql.connect("helpers/history.db")
+    return sql.connect("helpers/history_sandbox.db")
 
 
 def execute_query(query):
@@ -19,7 +19,8 @@ def execute_query(query):
         except Exception as err:
             logging.error(f"Error executing query: {query}")
             logging.error(err)
-        return result.fetchall()
+        if result:
+            return result.fetchall()
 
 
 # TODO: Make this dynamic - pass in table name with fields and types and generate the query

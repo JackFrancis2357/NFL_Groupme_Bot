@@ -15,4 +15,9 @@ draft_failure = \
     "Invalid team selection - {} is not an option. Please try again.\n\nFor the full list of team names, " \
     "say 'all teams'."
 
-end_message = ""
+end_message = "All teams have been drafted! This concludes the {} draft - good luck this season " \
+              "and see you next year!\n\nCheers,\nDraft Bot"
+
+out_of_turn = "You cannot select out of turn! {} is on the clock."
+
+selection_taken = "{} has already been selected. For the list of drafted teams, say 'draft status'"
