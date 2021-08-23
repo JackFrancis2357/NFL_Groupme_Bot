@@ -1,3 +1,4 @@
+from configs import Config
 import configs
 import datetime
 import numpy as np
@@ -11,10 +12,10 @@ def get_team_list(teams_list):
 
 
 def get_teams():
-    jack_teams = configs.base_configs['Jack']
-    jordan_teams = configs.base_configs['Jordan']
-    nathan_teams = configs.base_configs['Nathan']
-    patrick_teams = configs.base_configs['Patrick']
+    jack_teams = Config['Jack']
+    jordan_teams = Config['Jordan']
+    nathan_teams = Config['Nathan']
+    patrick_teams = Config['Patrick']
 
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
 
