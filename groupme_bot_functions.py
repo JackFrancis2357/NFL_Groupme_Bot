@@ -1,3 +1,4 @@
+import logging
 import os
 import requests
 import pandas as pd
@@ -15,7 +16,7 @@ def send_message(msg):
     try:
         response = requests.post(url, json=payload)
     except requests.exceptions.RequestException as e:
-        print(e)
+        logging.error(e)
     return response.status_code
 
 

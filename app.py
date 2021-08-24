@@ -67,66 +67,67 @@ def webhook():
     data = request.get_json()
     logging.info(f"Received: {data}")
 
-    # The user_id of the user who sent the most recently message
-    currentuser = data['user_id']
+    # The user_id of the user who sent the most recent message
+    current_user = data['user_id']
     groupme_users = groupme_lib.get_users()
 
     # make sure the bot never replies to itself
-    if currentuser == os.getenv('DEV_BOT_ID'):
+    if current_user == os.getenv('DEV_BOT_ID'):
         return
 
     # current message to be parsed
-    currentmessage = data['text'].lower().strip()
-    split_current_message = currentmessage.split()
+    current_message = data['text'].lower().strip()
+    split_current_message = current_message.split()
 
     ######################
     ## 2021 DRAFT LOGIC ##
     ######################
-    global draft_instance
-    if currentmessage.lower() == "start draft":
-        draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
-        return send_message(draft_instance.init_draft())
+    if Config["draft_enabled"]:
+        global draft_instance
+        if current_message.lower() == "start draft":
+            draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
+            return send_message(draft_instance.init_draft())
 
-    if currentmessage.lower().startswith("draft"):
-        # Don't let this get triggered without "start draft" first
-        if not draft_instance:
-            return
+        if current_message.lower().startswith("draft"):
+            # Don't let this get triggered without "start draft" first
+            if not draft_instance:
+                return
 
-        return draft_instance.make_selection(currentuser, currentmessage)
+            return draft_instance.make_selection(current_user, current_message)
 
     # Only if message is something we want to reply to do we request data from ESPN
-    if currentmessage in configs.base_configs['Responses']:
+    if current_message in Config['Responses']:
         standings = get_standings()
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
-        if currentmessage == 'standings':
+        if current_message == 'standings':
             message = get_standings_message(standings)
             return send_message(message)
 
-        elif currentmessage == 'standings right now':
+        elif current_message == 'standings right now':
             message = get_standings_message(standings)
             return send_message(message.upper())
 
         # Message options - either all teams, a player's teams, or print help
 
         elif len(split_current_message) == 2 and split_current_message[-1] == 'teams':
-            name = currentmessage.split()[0].capitalize()
+            name = current_message.split()[0].capitalize()
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
             elif name == 'My':
-                return_contestant(groupme_users[currentuser].split()[0], standings)
-        elif currentmessage == 'nfl bot help':
+                return_contestant(groupme_users[current_user].split()[0], standings)
+        elif current_message == 'nfl bot help':
             options = Config['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
 
-    elif currentmessage[:4].lower() == '!who':
+    elif current_message[:4].lower() == '!who':
         # I think this can be teams_list = [get_teams()] but will test later
         jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
         teams_list = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
         names = ['Jack', 'Jordan', 'Nathan', 'Patrick']
-        team_id = currentmessage[6:]
+        team_id = current_message[6:]
         for owner in range(4):
             if team_id in teams_list[owner]:
                 return send_message(names[owner])
@@ -134,7 +135,7 @@ def webhook():
                 for team in teams_list[owner]:
                     if team_id in team:
                         return send_message(names[owner])
-    elif currentmessage == 'weblink':
+    elif current_message == 'weblink':
         return send_message('https://nfl-groupme-flask-bot.herokuapp.com')
     elif split_current_message[0] == 'schedule':
         if len(split_current_message) == 1:

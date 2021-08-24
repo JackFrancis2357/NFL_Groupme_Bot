@@ -1,9 +1,17 @@
 import logging
+import os
 import sqlite3 as sql
+
+import psycopg2 as pg
+
+from configs import Config
 
 
 def _get_sql_connection():
-    return sql.connect("helpers/history_sandbox.db")
+    if Config["sql_flavor"] == "postgres":
+        return pg.connect(os.environ["DATABASE_URL"])
+    else:
+        return sql.connect("helpers/history_sandbox.db")
 
 
 def execute_query(query):
