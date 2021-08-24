@@ -1,0 +1,42 @@
+<html lang="en">
+    <head>
+        {% block head %}
+        <!-- Required meta tags -->
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+        {% block styles %}
+            <!-- Bootstrap CSS -->
+            {{ bootstrap.load_css() }}
+        {% endblock %}
+
+        <title> NFL Wins Tracker </title>
+        {% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+            <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">NFL Wins Tracker</a>
+            <!-- <ul class="navbar-nav px-3">
+              <li class="nav-item text-nowrap">
+                <a class="nav-link" href="#">Sign out</a>
+              </li>
+            </ul> -->
+          </nav>
+
+          <div class="container-fluid">
+            <div class="row mb-4">
+                {% include 'shared_nav.html' %}
+            </div>
+
+              <main role="main">
+                    {% block content %}{% endblock %}
+              </main>
+            </div>
+          </div>
+
+        {% block scripts %}
+            <!-- Optional JavaScript -->
+            {{ bootstrap.load_js() }}
+        {% endblock %}
+    </body>
+</html>
