@@ -145,9 +145,8 @@ class Draft:
             logging.info("Invalid selection received - returning message")
             return templates.draft_failure.format(selection)
 
-    def _get_username_by_id(self, id):
+    def _get_username_by_id(self, user_id):
         """Helper method to get name given ID."""
         for user in self.participants:
-            if user["user_id"] == id:
+            if user["user_id"] == user_id:
                 return user["name"]
-
