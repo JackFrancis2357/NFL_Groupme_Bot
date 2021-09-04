@@ -95,6 +95,11 @@ def webhook():
 
             return draft_instance.make_selection(current_user, current_message)
 
+        if current_message.lower() == "draft status":
+            if not draft_instance:
+                return
+            return send_message(draft_instance.get_teams_drafted())
+
     # Only if message is something we want to reply to do we request data from ESPN
     if current_message in Config['Responses']:
         standings = get_standings()

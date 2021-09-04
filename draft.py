@@ -14,6 +14,15 @@ def get_teams():
     return teams_list
 
 
+def teams_drafted(season):
+    """Get a list of teams drafted so far."""
+    result = sql_lib.execute_query(f"SELECT team FROM teams WHERE season='{season}';")
+    teams_list = []
+    for res in result:
+        teams_list.append(res[0])
+    return teams_list
+
+
 def draft_team(user, team, season, position):
     """Enter the draft selection in the database."""
     _ = sql_lib.execute_query(f"INSERT INTO teams VALUES ('{user}', '{team}', '{season}', {position});")
@@ -27,7 +36,7 @@ def check_team_draft_status(team, season):
 
 class Draft:
     def __init__(self, participants, draft_order=None, snake=True):
-        self.season = "2021"
+        self.season = Config["season"]
         self.participants = participants
         self.draft_order = draft_order or self.set_draft_order()
         self.current_user = None
@@ -90,6 +99,13 @@ class Draft:
                 self.current_user = self.draft_order[index + 1]
                 logging.info(f"Current user set: {self.current_user}")
                 return
+
+    def get_teams_drafted(self):
+        teams = teams_drafted(self.season)
+        drafted_string = None
+        for team in teams:
+            drafted_string += f"{team}\n"
+        return templates.teams_drafted.format(drafted_string)
 
     def make_selection(self, user, message):
 
