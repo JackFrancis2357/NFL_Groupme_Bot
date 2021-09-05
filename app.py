@@ -94,7 +94,7 @@ def webhook():
             if not draft_instance:
                 return
 
-            return draft_instance.make_selection(current_user, current_message)
+            return send_message(draft_instance.make_selection(current_user, current_message))
 
         if current_message.lower() == "draft status":
             if not draft_instance:

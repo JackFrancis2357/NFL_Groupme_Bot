@@ -21,7 +21,8 @@ def execute_query(query):
         try:
             logging.info(f"Running query: {query}")
             cursor = conn.cursor()
-            result = cursor.execute(query).fetchall()
+            cursor.execute(query)
+            result = cursor.fetchall()
             conn.commit()
             logging.info("Query executed successfully.")
         except Exception as err:
