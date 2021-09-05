@@ -1,7 +1,7 @@
 
 draft_welcome_message = \
     "Welcome to the {} draft!\n\n" \
-    "To select a team, type 'DRAFT: <team name>'. For example, 'DRAFT: Kansas City Chiefs'. " \
+    "To select a team, type 'Draft <team name>'. For example, 'Draft Kansas City Chiefs'. " \
     "Turns are tracked internally, so drafting a team will only be valid when it is your turn. " \
     "Your selection must be the full team name. For instance, Kansas City Chiefs - not Kansas City, " \
     "KC, Chiefs, etc. For the full list of team names, send 'all teams' in GroupMe.\n\n" \

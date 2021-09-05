@@ -21,14 +21,13 @@ def execute_query(query):
         try:
             logging.info(f"Running query: {query}")
             cursor = conn.cursor()
-            result = cursor.execute(query)
+            result = cursor.execute(query).fetchall()
             conn.commit()
             logging.info("Query executed successfully.")
         except Exception as err:
             logging.error(f"Error executing query: {query}")
             logging.error(err)
-        if result:
-            return result.fetchall()
+        return result if result else None
 
 
 # TODO: Make this dynamic - pass in table name with fields and types and generate the query

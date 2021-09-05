@@ -7,7 +7,7 @@ from helpers import sql_lib, templates
 
 def get_teams():
     """Get a list of teams from the database."""
-    result = sql_lib.execute_query("SELECT team FROM seasons;").fetchall()
+    result = sql_lib.execute_query("SELECT team FROM seasons;")
     teams_list = []
 
     if result:
@@ -18,7 +18,7 @@ def get_teams():
 
 def teams_drafted(season):
     """Get a list of teams drafted so far."""
-    result = sql_lib.execute_query(f"SELECT team FROM teams WHERE season='{season}';").fetchall()
+    result = sql_lib.execute_query(f"SELECT team FROM teams WHERE season='{season}';")
     teams_list = []
 
     if result:
