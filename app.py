@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from lxml import html
 
-from draft import Draft
+from draft import draft_instance
 from configs import Config
 from helpers import groupme_lib, setup_logger
 
@@ -24,9 +24,6 @@ app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET')
 app.config['SESSION_TYPE'] = 'filesystem'
 FLASK_DEBUG = True
 Session(app)
-
-# object placeholder for the draft
-draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -83,9 +80,9 @@ def webhook():
     ######################
     if Config["draft_enabled"]:
         logging.info(f"Draft status: {draft_instance}")
-        if current_message.lower() == "start draft":
-            draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
-            return send_message(draft_instance.init_draft())
+        # if current_message.lower() == "start draft":
+        #     draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
+        #     return send_message(draft_instance.init_draft())
 
         if current_message.lower().startswith("draft"):
             # Don't let this get triggered without "start draft" first
