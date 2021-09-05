@@ -80,9 +80,8 @@ def webhook():
     ######################
     if Config["draft_enabled"]:
         logging.info(f"Draft status: {draft_instance}")
-        # if current_message.lower() == "start draft":
-        #     draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
-        #     return send_message(draft_instance.init_draft())
+        if current_message.lower() == "start draft":
+            return send_message(draft_instance.init_draft())
 
         if current_message.lower().startswith("draft"):
             # Don't let this get triggered without "start draft" first
