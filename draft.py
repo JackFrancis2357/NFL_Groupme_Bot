@@ -112,7 +112,7 @@ class Draft:
         logging.info(f"Received message: {message} from {user}")
 
         # Don't let a user draft out of turn
-        if user["user_id"] != self.current_user:
+        if user != self.current_user:
             logging.info("User out of turn - returning message")
             return templates.out_of_turn.format(
                 self._get_username_by_id(self.current_user)
