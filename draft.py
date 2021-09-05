@@ -7,19 +7,23 @@ from helpers import sql_lib, templates
 
 def get_teams():
     """Get a list of teams from the database."""
-    result = sql_lib.execute_query("SELECT team FROM seasons;")
+    result = sql_lib.execute_query("SELECT team FROM seasons;").fetchall()
     teams_list = []
-    for res in result:
-        teams_list.append(res[0])
+
+    if result:
+        for res in result:
+            teams_list.append(res[0])
     return teams_list
 
 
 def teams_drafted(season):
     """Get a list of teams drafted so far."""
-    result = sql_lib.execute_query(f"SELECT team FROM teams WHERE season='{season}';")
+    result = sql_lib.execute_query(f"SELECT team FROM teams WHERE season='{season}';").fetchall()
     teams_list = []
-    for res in result:
-        teams_list.append(res[0])
+
+    if result:
+        for res in result:
+            teams_list.append(res[0])
     return teams_list
 
 
