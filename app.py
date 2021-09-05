@@ -14,7 +14,6 @@ from flask import Flask, request, session, render_template
 from flask_bootstrap import Bootstrap
 from flask_session import Session
 
-import configs
 from app_helper_functions import get_teams, get_current_week
 from get_homepage_data import get_homepage_data, get_homepage_standings
 from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings, get_schedule
@@ -27,7 +26,7 @@ FLASK_DEBUG = True
 Session(app)
 
 # object placeholder for the draft
-draft_instance = None
+draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -83,7 +82,6 @@ def webhook():
     ## 2021 DRAFT LOGIC ##
     ######################
     if Config["draft_enabled"]:
-        global draft_instance
         logging.info(f"Draft status: {draft_instance}")
         if current_message.lower() == "start draft":
             draft_instance = Draft(groupme_lib.get_users(), draft_order=Config["custom_draft_order"])
