@@ -56,10 +56,10 @@ sql_flavor: postgres
 num_teams: 32
 espn_url: https://www.espn.com/nfl/standings/_/season/2021
 season: "2021"
-group_id: 7867099
-dev_group_id: 59458329
+group_id: "7867099"
+dev_group_id: "59458329"
 custom_draft_order:
-  - 9957374
-  - 13038894
-  - 13529310
-  - 17900487
+  - "9957374"
+  - "13038894"
+  - "13529310"
+  - "17900487"
