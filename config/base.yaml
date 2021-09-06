@@ -70,3 +70,7 @@ custom_draft_order:
   - "13038894"
   - "13529310"
   - "17900487"
+
+# Online App Configs
+test_url: https://nfl-groupme-bot.herokuapp.com
+prod_url: https://nfl-groupme-flask-bot.herokuapp.com

@@ -1,3 +1,4 @@
+import os
 import yaml
 
 # Read in base configs
@@ -6,6 +7,8 @@ with open('./config/base.yaml', 'r') as file:
         Config = yaml.safe_load(file)
     except yaml.YAMLError as e:
         print(e)
+
+    Config["ENVIRONMENT"] = os.environ["ENVIRONMENT"]
 
 with open('config/team_mapping_jack.yaml', 'r') as file:
     try:

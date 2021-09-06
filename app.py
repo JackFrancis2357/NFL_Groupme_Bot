@@ -148,7 +148,9 @@ def webhook():
                     if team_id in team:
                         return send_message(names[owner])
     elif current_message == 'weblink':
-        return send_message('https://nfl-groupme-flask-bot.herokuapp.com')
+        host = Config["test_url"] if Config["ENVIRONMENT"] == "TEST" else Config["prod_url"]
+        return send_message(host)
+
     elif split_current_message[0] == 'schedule':
         if len(split_current_message) == 1:
             return ''
