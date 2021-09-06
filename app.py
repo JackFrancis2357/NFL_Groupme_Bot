@@ -68,7 +68,7 @@ def webhook():
     groupme_users = groupme_lib.get_users()
 
     # make sure the bot never replies to itself
-    if current_user == os.getenv('DEV_BOT_ID'):
+    if current_user == os.getenv('GROUPME_BOT_ID'):
         return
 
     # current message to be parsed

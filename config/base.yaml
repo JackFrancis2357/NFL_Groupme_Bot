@@ -1,4 +1,6 @@
 # Teams
+
+# TODO: Remove once all functionality is transitioned to Postgres
 Jack:
   - Baltimore Ravens
   - Tennessee Titans
@@ -51,6 +53,11 @@ Responses:
   - standings right now
 
 # Switch this config to False for most of the year - only use at draft time
+owners:
+  - Jack Francis
+  - Jordan Holland
+  - Nathan Lee
+  - Patrick Cooper
 draft_enabled: True
 sql_flavor: postgres
 num_teams: 32
