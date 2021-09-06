@@ -106,7 +106,7 @@ class Draft:
 
     def get_teams_drafted(self):
         teams = teams_drafted(self.season)
-        drafted_string = None
+        drafted_string = ""
         for team in teams:
             drafted_string += f"{team}\n"
         return templates.teams_drafted.format(drafted_string)
@@ -129,7 +129,7 @@ class Draft:
         if check_team_draft_status(selection.upper(), self.season):
             # TODO: Add draft status method
             logging.info("Selection has already been taken - returning message")
-            return templates.selection_taken.format(selection)
+            return templates.selection_taken.format(selection.title())
 
         if selection.upper() in teams:
             logging.info(f"Valid selection of: {selection.upper()}")
@@ -150,7 +150,7 @@ class Draft:
             ack_message = templates.draft_acknowledgment.format(
                 self.team_count,
                 pick_made_by,
-                selection,
+                selection.title(),
                 self._get_username_by_id(self.current_user)
             )
 
