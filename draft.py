@@ -170,6 +170,3 @@ class Draft:
         for user in self.participants:
             if user["user_id"] == user_id:
                 return user["name"]
-
-
-draft_instance = Draft(groupme_lib.get_users(), Config["custom_draft_order"])
