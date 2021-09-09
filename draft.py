@@ -109,7 +109,9 @@ def make_selection(user, message):
 
 
 def draft_active():
-    return sql_lib.execute_query("select snake from draft")[0][0]
+    result = sql_lib.execute_query("select snake from draft;")
+    if result:
+        return result[0][0]
 
 
 def init_draft(participants, draft_order=None, snake=True):
