@@ -1,12 +1,9 @@
 import logging
 import os
-import pandas as pd
-import requests
-from lxml import html
 
 import draft
 from configs import Config
-from helpers import groupme_lib, pickle_draft, setup_logger
+from helpers import groupme_lib, setup_logger
 
 setup_logger.config_logger()
 
