@@ -91,7 +91,6 @@ def webhook():
                 return
 
             selection_message = draft.make_selection(current_user, current_message)
-            pickle_draft.pickle_draft_object(draft_instance)
             return send_message(selection_message)
 
         if current_message.lower() == "status draft":
