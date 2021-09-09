@@ -1,5 +1,5 @@
 import logging
-import random
+import json
 
 from configs import Config
 from helpers import sql_lib, templates
@@ -116,7 +116,8 @@ def draft_active():
 
 def init_draft(participants, draft_order=None, snake=True):
     current_drafter = draft_order[0]
-    query = f"insert into draft(participants, draft_order, current_drafter, snake, season, active) values ('{participants}', '{draft_order}', '{current_drafter}', {snake}, '{Config['season']}', {True});"
+    participants_string = json.dumps(participants).replace("'", "\"")
+    query = f"insert into draft(participants, draft_order, current_drafter, snake, season, active) values ('{participants_string}', '{draft_order}', '{current_drafter}', {snake}, '{Config['season']}', {True});"
     sql_lib.execute_query(query)
     welcome_message = templates.draft_welcome_message.format(
         Config['season'],
