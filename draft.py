@@ -119,7 +119,7 @@ def init_draft(participants, draft_order=None, snake=True):
     participants_string = json.dumps(participants).replace("'", "\"")
     draft_order = json.dumps(draft_order).replace("'", "\"").replace("[", "{").replace("]", "}")
     query = f"insert into draft(participants, draft_order, current_drafter, snake, season, active) values ('{participants_string}', '{draft_order}', '{current_drafter}', {snake}, '{Config['season']}', {True});"
-    sql_lib.execute_query(query)
+    sql_lib.execute_query(query, update=True)
     welcome_message = templates.draft_welcome_message.format(
         Config['season'],
         get_username_by_id(draft_order[0], participants),
@@ -141,7 +141,8 @@ def set_current_drafter():
     if snake and current_user == draft_order[-1]:
         # Reverse the draft order
         logging.info("Reversing the draft order for snake")
-        sql_lib.execute_query(f"update draft set draft_order={draft_order[::-1]};")
+        draft_order = json.dumps(draft_order).replace("'", "\"").replace("[", "{").replace("]", "}")
+        sql_lib.execute_query(f"update draft set draft_order={draft_order[::-1]};", update=True)
         # Current user stays the same - snake
         return
 
@@ -149,7 +150,7 @@ def set_current_drafter():
     for index in range(len(draft_order)):
         if draft_order[index] == current_user:
             current_user = draft_order[index + 1]
-            sql_lib.execute_query(f"update draft set current_drafter={current_user};")
+            sql_lib.execute_query(f"update draft set current_drafter={current_user};", update=True)
             logging.info(f"Current user set: {current_user}")
             return
 

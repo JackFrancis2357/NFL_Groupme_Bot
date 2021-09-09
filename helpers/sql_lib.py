@@ -14,7 +14,7 @@ def _get_sql_connection():
         return sql.connect("helpers/history_sandbox.db")
 
 
-def execute_query(query):
+def execute_query(query, update=False):
     with _get_sql_connection() as conn:
         logging.info("Database connection established.")
         result = None
@@ -22,7 +22,8 @@ def execute_query(query):
             logging.info(f"Running query: {query}")
             cursor = conn.cursor()
             cursor.execute(query)
-            result = cursor.fetchall()
+            if not update:
+                result = cursor.fetchall()
             conn.commit()
             logging.info("Query executed successfully.")
         except Exception as err:
