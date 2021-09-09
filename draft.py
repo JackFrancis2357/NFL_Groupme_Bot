@@ -144,8 +144,9 @@ def set_current_drafter():
     if snake and current_user == draft_order[-1]:
         # Reverse the draft order
         logging.info("Reversing the draft order for snake")
-        draft_order = json.dumps(draft_order).replace("'", "\"").replace("[", "{").replace("]", "}")
-        sql_lib.execute_query(f"update draft set draft_order={draft_order[::-1]};", update=True)
+        draft_order_reverse = draft_order[::-1]
+        draft_order_reverse = json.dumps(draft_order_reverse).replace("'", "\"").replace("[", "{").replace("]", "}")
+        sql_lib.execute_query(f"update draft set draft_order={draft_order_reverse[::-1]};", update=True)
         # Current user stays the same - snake
         return
 
