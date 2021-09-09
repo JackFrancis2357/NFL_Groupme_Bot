@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from lxml import html
 
-from draft import Draft
+import draft
 from configs import Config
 from helpers import groupme_lib, pickle_draft, setup_logger
 
@@ -79,32 +79,25 @@ def webhook():
     ## 2021 DRAFT LOGIC ##
     ######################
     if Config["draft_enabled"]:
-        # Get pickled draft object, if it exists on disk
-        if "draft_object" in os.listdir("/app"):
-            draft_instance = pickle_draft.get_draft_object()
-        else:
-            draft_instance = Draft(groupme_lib.get_users(), Config["custom_draft_order"])
 
-        logging.info(f"Draft status: {draft_instance}")
-        if current_message.lower() == "start draft":
-            draft_init_message = draft_instance.init_draft()
-            pickle_draft.pickle_draft_object(draft_instance)
+        # Start draft if it isn't already active
+        if current_message.lower() == "start draft" and not draft.draft_active():
+            draft_init_message = draft.init_draft(groupme_users, Config["custom_draft_order"])
             return send_message(draft_init_message)
 
         if current_message.lower().startswith("draft"):
             # Don't let this get triggered without "start draft" first
-            if not draft_instance:
+            if not draft.draft_active():
                 return
 
-            selection_message = draft_instance.make_selection(current_user, current_message)
+            selection_message = draft.make_selection(current_user, current_message)
             pickle_draft.pickle_draft_object(draft_instance)
             return send_message(selection_message)
 
         if current_message.lower() == "status draft":
-            if not draft_instance:
+            if not draft.draft_active():
                 return
-            teams_draft_message = draft_instance.get_teams_drafted()
-            pickle_draft.pickle_draft_object(draft_instance)
+            teams_draft_message = draft.teams_drafted(Config['season'])
             return send_message(teams_draft_message)
 
     # Only if message is something we want to reply to do we request data from ESPN

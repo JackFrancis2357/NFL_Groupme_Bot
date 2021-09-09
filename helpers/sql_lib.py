@@ -27,7 +27,7 @@ def execute_query(query):
             logging.info("Query executed successfully.")
         except Exception as err:
             logging.error(f"Error executing query: {query}")
-            logging.error(err)
+            raise err
         return result if result else None
 
 
