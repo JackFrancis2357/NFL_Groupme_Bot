@@ -32,7 +32,7 @@ def teams_drafted(season):
 
 def draft_team(user, team, season, position):
     """Enter the draft selection in the database."""
-    _ = sql_lib.execute_query(f"INSERT INTO teams VALUES ('{user}', '{team}', '{season}', {position});")
+    _ = sql_lib.execute_query(f"INSERT INTO teams VALUES ('{user}', '{team}', '{season}', {position});", update=True)
 
 
 def check_team_draft_status(team, season):
