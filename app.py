@@ -1,11 +1,19 @@
+import logging
 import os
+import pandas as pd
 import requests
+from lxml import html
+
+import draft
+from configs import Config
+from helpers import groupme_lib, pickle_draft, setup_logger
+
+setup_logger.config_logger()
 
 from flask import Flask, request, session, render_template
 from flask_bootstrap import Bootstrap
 from flask_session import Session
 
-import configs
 from app_helper_functions import get_teams, get_current_week
 from get_homepage_data import get_homepage_data, get_homepage_standings
 from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings, get_schedule
@@ -15,7 +23,6 @@ bootstrap = Bootstrap(app)
 app.config['SECRET_KEY'] = os.getenv('FLASK_SECRET')
 app.config['SESSION_TYPE'] = 'filesystem'
 FLASK_DEBUG = True
-
 Session(app)
 
 
@@ -54,57 +61,77 @@ def webhook():
 
     # json we receive for every message in the chat
     data = request.get_json()
+    logging.info(f"Received: {data}")
 
-    # The user_id of the user who sent the most recently message
-    currentuser = data['user_id']
-    user_json = requests.get(
-        'https://api.groupme.com/v3/groups/' + data['group_id'] + '?' + 'token=' + os.getenv('TOKEN')).json()
-    # Keeping commented to test out other functionality for a minute
-    groupme_users = dict()
-    for member in user_json['response']['members']:
-        groupme_users.update({member['user_id']: member['name']})
+    # The user_id of the user who sent the most recent message
+    current_user = data['user_id']
+    groupme_users = groupme_lib.get_users()
 
     # make sure the bot never replies to itself
-    if currentuser == os.getenv('GROUPME_BOT_ID'):
+    if current_user == os.getenv('GROUPME_BOT_ID'):
         return
 
     # current message to be parsed
-    currentmessage = data['text'].lower().strip()
-    split_current_message = currentmessage.split()
+    current_message = data['text'].lower().strip()
+    split_current_message = current_message.split()
+
+    ######################
+    ## 2021 DRAFT LOGIC ##
+    ######################
+    if Config["draft_enabled"]:
+
+        # Start draft if it isn't already active
+        if current_message.lower() == "start draft" and not draft.draft_active():
+            draft_init_message = draft.init_draft(groupme_users, Config["custom_draft_order"])
+            return send_message(draft_init_message)
+
+        if current_message.lower().startswith("draft"):
+            # Don't let this get triggered without "start draft" first
+            if not draft.draft_active():
+                return
+
+            selection_message = draft.make_selection(current_user, current_message)
+            return send_message(selection_message)
+
+        if current_message.lower() == "status draft":
+            if not draft.draft_active():
+                return
+            teams_draft_message = draft.teams_drafted(Config['season'])
+            return send_message(teams_draft_message)
 
     # Only if message is something we want to reply to do we request data from ESPN
-    if currentmessage in configs.base_configs['Responses']:
+    if current_message in Config['Responses']:
         standings = get_standings()
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
-        if currentmessage == 'standings':
+        if current_message == 'standings':
             message = get_standings_message(standings)
             return send_message(message)
 
-        elif currentmessage == 'standings right now':
+        elif current_message == 'standings right now':
             message = get_standings_message(standings)
             return send_message(message.upper())
 
         # Message options - either all teams, a player's teams, or print help
 
         elif len(split_current_message) == 2 and split_current_message[-1] == 'teams':
-            name = currentmessage.split()[0].capitalize()
+            name = current_message.split()[0].capitalize()
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
             elif name == 'My':
-                return_contestant(groupme_users[currentuser].split()[0], standings)
-        elif currentmessage == 'nfl bot help':
-            options = configs.base_configs['Responses']
+                return_contestant(groupme_users[current_user].split()[0], standings)
+        elif current_message == 'nfl bot help':
+            options = Config['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
 
-    elif currentmessage[:4].lower() == '!who':
+    elif current_message[:4].lower() == '!who':
         # I think this can be teams_list = [get_teams()] but will test later
         jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
         teams_list = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
         names = ['Jack', 'Jordan', 'Nathan', 'Patrick']
-        team_id = currentmessage[6:]
+        team_id = current_message[6:]
         for owner in range(4):
             if team_id in teams_list[owner]:
                 return send_message(names[owner])
@@ -112,8 +139,10 @@ def webhook():
                 for team in teams_list[owner]:
                     if team_id in team:
                         return send_message(names[owner])
-    elif currentmessage == 'weblink':
-        return send_message('https://nfl-groupme-flask-bot.herokuapp.com')
+    elif current_message == 'weblink':
+        host = Config["test_url"] if Config["ENVIRONMENT"] == "TEST" else Config["prod_url"]
+        return send_message(host)
+
     elif split_current_message[0] == 'schedule':
         if len(split_current_message) == 1:
             return ''

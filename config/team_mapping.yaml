@@ -1,0 +1,129 @@
+TEAMS:
+  Buffalo Bills:
+    Abbrev: BUF
+    Conference: AFC
+    Division: AFC East
+  Miami Dolphins:
+    Abbrev: MIA
+    Conference: AFC
+    Division: AFC East
+  New England Patriots:
+    Abbrev: NE
+    Conference: AFC
+    Division: AFC East
+  New York Jets:
+    Abbrev: NYJ
+    Conference: AFC
+    Division: AFC East
+  Jacksonville Jaguars:
+    Abbrev: JAX
+    Conference: AFC
+    Division: AFC South
+  Indianapolis Colts:
+    Abbrev: IND
+    Conference: AFC
+    Division: AFC South
+  Houston Texans:
+    Abbrev: HOU
+    Conference: AFC
+    Division: AFC South
+  Tennessee Titans:
+    Abbrev: TEN
+    Conference: AFC
+    Division: AFC South
+  Kansas City Chiefs:
+    Abbrev: KC
+    Conference: AFC
+    Division: AFC West
+  Las Vegas Raiders:
+    Abbrev: LV
+    Conference: AFC
+    Division: AFC West
+  Los Angeles Chargers:
+    Abbrev: LAC
+    Conference: AFC
+    Division: AFC West
+  Denver Broncos:
+    Abbrev: DEN
+    Conference: AFC
+    Division: AFC West
+  Pittsburgh Steelers:
+    Abbrev: PIT
+    Conference: AFC
+    Division: AFC North
+  Cincinnati Bengals:
+    Abbrev: CIN
+    Conference: AFC
+    Division: AFC North
+  Baltimore Ravens:
+    Abbrev: BAL
+    Conference: AFC
+    Division: AFC North
+  Cleveland Browns:
+    Abbrev: CLE
+    Conference: AFC
+    Division: AFC North
+  Washington Football Team:
+    Abbrev: WSH
+    Conference: NFC
+    Division: NFC East
+  Philadelphia Eagles:
+    Abbrev: PHI
+    Conference: NFC
+    Division: NFC East
+  Dallas Cowboys:
+    Abbrev: DAL
+    Conference: NFC
+    Division: NFC East
+  New York Giants:
+    Abbrev: NYG
+    Conference: NFC
+    Division: NFC East
+  Atlanta Falcons:
+    Abbrev: ATL
+    Conference: NFC
+    Division: NFC South
+  Carolina Panthers:
+    Abbrev: CAR
+    Conference: NFC
+    Division: NFC South
+  New Orleans Saints:
+    Abbrev: "NO"
+    Conference: NFC
+    Division: NFC South
+  Tampa Bay Buccaneers:
+    Abbrev: TB
+    Conference: NFC
+    Division: NFC South
+  Minnesota Vikings:
+    Abbrev: MIN
+    Conference: NFC
+    Division: NFC North
+  Green Bay Packers:
+    Abbrev: GB
+    Conference: NFC
+    Division: NFC North
+  Chicago Bears:
+    Abbrev: CHI
+    Conference: NFC
+    Division: NFC North
+  Detroit Lions:
+    Abbrev: DET
+    Conference: NFC
+    Division: NFC North
+  Seattle Seahawks:
+    Abbrev: SEA
+    Conference: NFC
+    Division: NFC West
+  Arizona Cardinals:
+    Abbrev: ARI
+    Conference: NFC
+    Division: NFC West
+  Los Angeles Rams:
+    Abbrev: LAR
+    Conference: NFC
+    Division: NFC West
+  San Francisco 49ers:
+    Abbrev: SF
+    Conference: NFC
+    Division: NFC West

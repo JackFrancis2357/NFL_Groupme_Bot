@@ -1,0 +1,27 @@
+2021-08-13 02:00:23,360 | INFO | setup_logger.py | This is a test.
+2021-08-13 02:00:24,134 | INFO | testing_nfl_espn.py | This is a test from the dataframe file
+2021-08-14 12:32:02,506 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:32:02,507 | INFO | sql_lib.py | Running query: SELECT * FROM teams
+2021-08-14 12:32:02,508 | ERROR | sql_lib.py | Error executing query: SELECT * FROM teams
+2021-08-14 12:32:02,508 | ERROR | sql_lib.py | no such table: teams
+2021-08-14 12:32:35,231 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:32:35,231 | INFO | sql_lib.py | Running query: SELECT * FROM team;
+2021-08-14 12:32:35,231 | ERROR | sql_lib.py | Error executing query: SELECT * FROM team;
+2021-08-14 12:32:35,232 | ERROR | sql_lib.py | no such table: team
+2021-08-14 12:33:20,177 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:33:20,177 | INFO | sql_lib.py | Running query: SELECT * FROM teams;
+2021-08-14 12:33:20,178 | ERROR | sql_lib.py | Error executing query: SELECT * FROM teams;
+2021-08-14 12:33:20,178 | ERROR | sql_lib.py | no such table: teams
+2021-08-14 12:35:18,443 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:35:18,443 | INFO | sql_lib.py | Running query: SELECT * FROM teams;
+2021-08-14 12:36:28,972 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:36:28,973 | INFO | sql_lib.py | Running query: SELECT * FROM team;
+2021-08-14 12:36:28,974 | ERROR | sql_lib.py | Error executing query: SELECT * FROM team;
+2021-08-14 12:36:28,974 | ERROR | sql_lib.py | no such table: team
+2021-08-14 12:37:24,456 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:37:24,456 | INFO | sql_lib.py | Running query: SELECT * FROM team;
+2021-08-14 12:37:24,456 | ERROR | sql_lib.py | Error executing query: SELECT * FROM team;
+2021-08-14 12:37:24,457 | ERROR | sql_lib.py | no such table: team
+2021-08-14 12:37:54,871 | INFO | sql_lib.py | Database connection established.
+2021-08-14 12:37:54,871 | INFO | sql_lib.py | Running query: SELECT * FROM teams;
+2021-08-14 12:37:54,872 | INFO | sql_lib.py | Query executed successfully.

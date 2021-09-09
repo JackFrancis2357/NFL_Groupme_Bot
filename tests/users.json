@@ -1,0 +1,51 @@
+[
+  {
+    "user_id": "13529310",
+    "nickname": "Jordan Holland",
+    "image_url": "https://i.groupme.com/638x478.jpeg.9928bb5f69144fc8ac1e40552b63cdbf",
+    "id": "42692354",
+    "muted": false,
+    "autokicked": false,
+    "roles": [
+      "admin",
+      "owner"
+    ],
+    "name": "Jordan Holland"
+  },
+  {
+    "user_id": "13038894",
+    "nickname": "Jack Francis",
+    "image_url": "https://i.groupme.com/1024x1024.jpeg.2b95adfb019240e0a4942ed434f833d8",
+    "id": "42692425",
+    "muted": false,
+    "autokicked": false,
+    "roles": [
+      "user"
+    ],
+    "name": "Jack Francis"
+  },
+  {
+    "user_id": "9957374",
+    "nickname": "Patrick Cooper",
+    "image_url": "https://i.groupme.com/1890x1260.jpeg.91d9e2252b524259828b4b2b34c96249",
+    "id": "42692426",
+    "muted": false,
+    "autokicked": false,
+    "roles": [
+      "user"
+    ],
+    "name": "Patrick Cooper"
+  },
+  {
+    "user_id": "17900487",
+    "nickname": "Nathan Lee",
+    "image_url": "https://i.groupme.com/1022x1024.jpeg.b6fa668ddb62448a9b56b77e7657edb2",
+    "id": "42692427",
+    "muted": false,
+    "autokicked": false,
+    "roles": [
+      "user"
+    ],
+    "name": "Nathan Lee"
+  }
+]

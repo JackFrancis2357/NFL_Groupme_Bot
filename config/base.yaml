@@ -1,4 +1,6 @@
 # Teams
+
+# TODO: Remove once all functionality is transitioned to Postgres
 Jack:
   - Baltimore Ravens
   - Tennessee Titans
@@ -49,3 +51,26 @@ Responses:
   - nfl bot help
   - my teams
   - standings right now
+
+# Switch this config to False for most of the year - only use at draft time
+owners:
+  - Jack Francis
+  - Jordan Holland
+  - Nathan Lee
+  - Patrick Cooper
+draft_enabled: True
+sql_flavor: postgres
+num_teams: 32
+espn_url: https://www.espn.com/nfl/standings/_/season/2021
+season: "2021"
+group_id: "7867099"
+dev_group_id: "59458329"
+custom_draft_order:
+  - "9957374"
+  - "13038894"
+  - "13529310"
+  - "17900487"
+
+# Online App Configs
+test_url: https://nfl-groupme-bot.herokuapp.com
+prod_url: https://nfl-groupme-flask-bot.herokuapp.com
