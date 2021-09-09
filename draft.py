@@ -53,7 +53,7 @@ def make_selection(user, message):
     logging.info(f"Received message: {message} from {user}")
     query_results = sql_lib.execute_query("select * from draft;")
     current_user = query_results[0][2]
-    participants = query_results[0][1]
+    participants = query_results[0][0]
     team_count = sql_lib.execute_query("select count(*) from teams where season='2021';")[0][0]
 
     # Don't let a user draft out of turn
