@@ -117,7 +117,7 @@ def draft_active():
 def init_draft(participants, draft_order=None, snake=True):
     current_drafter = draft_order[0]
     participants_string = json.dumps(participants).replace("'", "\"")
-    draft_order = json.dumps(draft_order).replace("'", "\"")
+    draft_order = json.dumps(draft_order).replace("'", "\"").replace("[", "{").replace("]", "}")
     query = f"insert into draft(participants, draft_order, current_drafter, snake, season, active) values ('{participants_string}', '{draft_order}', '{current_drafter}', {snake}, '{Config['season']}', {True});"
     sql_lib.execute_query(query)
     welcome_message = templates.draft_welcome_message.format(
