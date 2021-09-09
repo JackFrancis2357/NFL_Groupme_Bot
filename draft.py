@@ -86,7 +86,10 @@ def make_selection(user, message):
         # Use this variable to hold the user who picked - current user will now be the next up
         # Reallyyyy need to refactor this at some point
         pick_made_by = get_username_by_id(current_user, participants)
+
+        # Set the next drafter - update current_user variable to reflect this
         set_current_drafter()
+        current_user = sql_lib.execute_query("select current_drafter from draft;")[0][0]
 
         ack_message = templates.draft_acknowledgment.format(
             team_count + 1,
