@@ -25,7 +25,10 @@ def get_teams():
         f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
 
     print(jack_teams)
-    jack_teams = [" ".join(i.capitalize()) for x in jack_teams for i in x.split()]
+    jack_teams = [x.title() for x in jack_teams]
+    jordan_teams = [x.title() for x in jordan_teams]
+    nathan_teams = [x.title() for x in nathan_teams]
+    patrick_teams = [x.title() for x in patrick_teams]
     print(jack_teams)
 
     print(type(jack_teams))
