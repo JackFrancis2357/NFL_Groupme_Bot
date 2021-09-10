@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from lxml import html
 
-from helpers.setup_logger import LOGGER
+# from helpers.setup_logger import LOGGER
 import logging
 
 r = requests.get("https://www.espn.com/nfl/standings/_/season/2020")
