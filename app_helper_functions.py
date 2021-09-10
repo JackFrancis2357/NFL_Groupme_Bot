@@ -25,6 +25,9 @@ def get_teams():
         f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
 
     print(jack_teams)
+    jack_teams = [i.capitalize() for x in jack_teams for i in x]
+    print(jack_teams)
+
     print(type(jack_teams))
 
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
