@@ -27,8 +27,12 @@ def get_teams():
     all_of_us = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
     for big_team in all_of_us:
         for i, team in enumerate(big_team):
+
+            # Title uppercases the first letter, so the e gets capitalized in 49ers
             if team == 'San Francisco 49Ers':
                 big_team[i] = 'San Francisco 49ers'
+
+            # Discrepancy to look at later. I had to change my team mapping to Washington for ESPN, I believe
             if team == 'Washington Football Team':
                 big_team[i] = 'Washington'
 
