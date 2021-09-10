@@ -116,6 +116,9 @@ def webhook():
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
             elif name == 'My':
+                # Error is: TypeError: list indices must be integers or slices, not str
+                # No code regarding this has changed since my last merge (jf-flask) so not
+                # sure what the issue is here.
                 return_contestant(groupme_users[current_user].split()[0], standings)
         elif current_message == 'nfl bot help':
             options = Config['Responses']
