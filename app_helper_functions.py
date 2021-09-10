@@ -24,6 +24,12 @@ def get_teams():
     patrick_teams = [team[0].title() for team in sql_lib.execute_query(
         f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
 
+    all_of_us = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
+    for big_team in all_of_us:
+        for i, team in enumerate(big_team):
+            if team == 'San Francisco 49Ers':
+                big_team[i] = 'San Francisco 49ers'
+
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
 
 
