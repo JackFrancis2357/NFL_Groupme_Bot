@@ -29,6 +29,8 @@ def get_teams():
         for i, team in enumerate(big_team):
             if team == 'San Francisco 49Ers':
                 big_team[i] = 'San Francisco 49ers'
+            if team == 'Washington Football Team':
+                big_team[i] = 'Washington'
 
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
 
