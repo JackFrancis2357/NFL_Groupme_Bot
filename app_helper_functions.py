@@ -1,10 +1,10 @@
-
 import datetime
 import numpy as np
 
 import configs
 from configs import Config
 from helpers import sql_lib
+
 
 def get_team_list(teams_list):
     team_abb_list = []
@@ -14,12 +14,27 @@ def get_team_list(teams_list):
 
 
 def get_teams():
-
     # TODO: Refactor this to at least be a dict of lists so we aren't hard-coding so much
-    jack_teams = [team[0] for team in sql_lib.execute_query(f"SELECT team FROM teams WHERE owner='Jack Francis' and season='{Config['season']}';")]
-    jordan_teams = [team[0] for team in sql_lib.execute_query(f"SELECT team FROM teams WHERE owner='Jordan Holland' and season='{Config['season']}';")]
-    nathan_teams = [team[0] for team in sql_lib.execute_query(f"SELECT team FROM teams WHERE owner='Nathan Lee' and season='{Config['season']}';")]
-    patrick_teams = [team[0] for team in sql_lib.execute_query(f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
+    jack_teams = [team[0].title() for team in sql_lib.execute_query(
+        f"SELECT team FROM teams WHERE owner='Jack Francis' and season='{Config['season']}';")]
+    jordan_teams = [team[0].title() for team in sql_lib.execute_query(
+        f"SELECT team FROM teams WHERE owner='Jordan Holland' and season='{Config['season']}';")]
+    nathan_teams = [team[0].title() for team in sql_lib.execute_query(
+        f"SELECT team FROM teams WHERE owner='Nathan Lee' and season='{Config['season']}';")]
+    patrick_teams = [team[0].title() for team in sql_lib.execute_query(
+        f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
+
+    all_of_us = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
+    for big_team in all_of_us:
+        for i, team in enumerate(big_team):
+
+            # Title uppercases the first letter, so the e gets capitalized in 49ers
+            if team == 'San Francisco 49Ers':
+                big_team[i] = 'San Francisco 49ers'
+
+            # Discrepancy to look at later. I had to change my team mapping to Washington for ESPN, I believe
+            if team == 'Washington Football Team':
+                big_team[i] = 'Washington'
 
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
 

@@ -116,7 +116,8 @@ def webhook():
             if name in ['Jack', 'Jordan', 'Patrick', 'Nathan', 'All']:
                 return_contestant(name, standings)
             elif name == 'My':
-                return_contestant(groupme_users[current_user].split()[0], standings)
+                user = next(item for item in groupme_users if item["user_id"] == current_user)['name'].split()[0]
+                return_contestant(user, standings)
         elif current_message == 'nfl bot help':
             options = Config['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"

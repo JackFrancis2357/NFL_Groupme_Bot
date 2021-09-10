@@ -81,8 +81,7 @@ def get_standings():
     tree = html.fromstring(r.content)
 
     nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
-    base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/section/'
-
+    base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
     ctr = 0
     # AFC Teams
     for i in range(1, 21):
@@ -100,7 +99,7 @@ def get_standings():
         nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
-    jack_teams, jordan_teams, patrick_teams, nathan_teams = get_teams()
+    jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
     all_teams = jack_teams + jordan_teams + patrick_teams + nathan_teams
 
     name_team = pd.DataFrame(columns=['Name', 'Team'])
@@ -110,6 +109,8 @@ def get_standings():
         name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
 
     standings = name_team.merge(nfl_results_df, how='left', on='Team')
+
+    print(standings)
 
     return standings
 
