@@ -12,7 +12,6 @@ def get_homepage_data(current_week):
     away_home_teams['Home'] = away_home_teams['Home'].map(lambda x: x.lstrip())
 
     ja_t, jo_t, pa_t, na_t = get_team_abb()
-    print(ja_t)
     weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'patrick', 'nathan'],
                                       columns=['jack', 'jordan', 'patrick', 'nathan'])
 
