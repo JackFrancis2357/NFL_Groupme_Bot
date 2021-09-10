@@ -17,17 +17,12 @@ def get_teams():
     # TODO: Refactor this to at least be a dict of lists so we aren't hard-coding so much
     jack_teams = [team[0].title() for team in sql_lib.execute_query(
         f"SELECT team FROM teams WHERE owner='Jack Francis' and season='{Config['season']}';")]
-    jordan_teams = [team[0] for team in sql_lib.execute_query(
+    jordan_teams = [team[0].title() for team in sql_lib.execute_query(
         f"SELECT team FROM teams WHERE owner='Jordan Holland' and season='{Config['season']}';")]
-    nathan_teams = [team[0] for team in sql_lib.execute_query(
+    nathan_teams = [team[0].title() for team in sql_lib.execute_query(
         f"SELECT team FROM teams WHERE owner='Nathan Lee' and season='{Config['season']}';")]
-    patrick_teams = [team[0] for team in sql_lib.execute_query(
+    patrick_teams = [team[0].title() for team in sql_lib.execute_query(
         f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
-
-    # jack_teams = [x.title() for x in jack_teams]
-    jordan_teams = [x.title() for x in jordan_teams]
-    nathan_teams = [x.title() for x in nathan_teams]
-    patrick_teams = [x.title() for x in patrick_teams]
 
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
 

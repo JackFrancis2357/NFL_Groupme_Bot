@@ -22,6 +22,7 @@ def get_homepage_data(current_week):
     for i in range(away_home_teams.shape[0]):
         away_team = away_home_teams['Away'][i]
         home_team = away_home_teams['Home'][i]
+        print(away_team, home_team)
         away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, pa_t, na_t)
         home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, pa_t, na_t)
 
