@@ -119,11 +119,12 @@ def webhook():
                 # Error is: TypeError: list indices must be integers or slices, not str
                 # No code regarding this has changed since my last merge (jf-flask) so not
                 # sure what the issue is here.
-                print(current_user)
-                print(groupme_users[0])
-                print(type(current_user))
-                print(type(groupme_users))
-                return_contestant(groupme_users[0][current_user].split()[0], standings)
+                # print(current_user)
+                # print(groupme_users[0])
+                # print(type(current_user))
+                # print(type(groupme_users))
+                user = next(item for item in groupme_users if item["user_id"] == current_user)['name'].split()[0]
+                return_contestant(user, standings)
         elif current_message == 'nfl bot help':
             options = Config['Responses']
             header = "Input options for the NFL Wins Tracker bot:\n"
