@@ -35,9 +35,8 @@ def get_homepage_data(current_week):
         away_score = score_dict[away_team]
         home_team = away_home_teams['Home'][i]
         home_score = score_dict[home_team]
-        print(away_team, home_team)
-        away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, pa_t, na_t)
-        home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, pa_t, na_t)
+        away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, na_t, pa_t)
+        home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, na_t, pa_t)
 
         doc = {
             'Away': away_team,
