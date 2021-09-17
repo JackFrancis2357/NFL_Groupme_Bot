@@ -33,9 +33,9 @@
                     {%- for row in matchups_two %}
                         <tr>
                             <td class='text-center'
-                                style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}</td>
+                                style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{ row.Away_Score }}</td>
                             <td class='text-center'
-                                style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}</td>
+                                style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{ row.Home_Score }}</td>
                         </tr>
                     {%- endfor %}
                     </tbody>
