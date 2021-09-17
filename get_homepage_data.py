@@ -22,6 +22,8 @@ def get_homepage_data(current_week):
     nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
     final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
     start_date = final_date - datetime.timedelta(days=6)
+    final_date = datetime.datetime.strftime(final_date, '%Y%m%d')
+    start_date = datetime.datetime.strftime(start_date, '%Y%m%d')
 
     score_dict = get_current_scores(start_date, final_date)
 
@@ -93,9 +95,9 @@ def get_homepage_standings():
 
 def get_current_scores(start_date, final_date):
     score_dict = {}
-    espn_score_date = requests.get(
+    espn_score_data = requests.get(
         f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}").json()
-    for event in espn_score_date['events']:
+    for event in espn_score_data['events']:
         for competition in event['competitions']:
             for competitor in competition['competitors']:
                 score_dict[competitor['team']['abbreviation']] = competitor['score']
