@@ -1,6 +1,9 @@
 import pandas as pd
 from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value
 from groupme_bot_functions import get_standings
+import datetime
+import json
+import requests
 
 
 def get_homepage_data(current_week):
@@ -15,19 +18,30 @@ def get_homepage_data(current_week):
     weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'patrick', 'nathan'],
                                       columns=['jack', 'jordan', 'patrick', 'nathan'])
 
+    # Get current scores
+    nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
+    final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
+    start_date = final_date - datetime.timedelta(days=6)
+
+    score_dict = get_current_scores(start_date, final_date)
+
     matchups_columns = away_home_teams.columns
     matchups = []
     matchups_two = []
     for i in range(away_home_teams.shape[0]):
         away_team = away_home_teams['Away'][i]
+        away_score = score_dict[away_team]
         home_team = away_home_teams['Home'][i]
+        home_score = score_dict[home_team]
         away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, pa_t, na_t)
         home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, pa_t, na_t)
 
         doc = {
             'Away': away_team,
+            'Away_Score': away_score,
             'Away_Owner': away_color,
             'Home': home_team,
+            'Home_Score': home_score,
             'Home_Owner': home_color
         }
         if i < 8:
@@ -75,3 +89,14 @@ def get_homepage_standings():
         }
         standings_docs.append(doc)
     return standings_docs, standings_columns
+
+
+def get_current_scores(start_date, final_date):
+    score_dict = {}
+    espn_score_date = requests.get(
+        f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}").json()
+    for event in espn_score_date['events']:
+        for competition in event['competitions']:
+            for competitor in competition['competitors']:
+                score_dict[competitor['team']['abbreviation']] = competitor['score']
+    return score_dict
