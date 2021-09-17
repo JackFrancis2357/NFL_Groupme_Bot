@@ -100,5 +100,8 @@ def get_current_scores(start_date, final_date):
     for event in espn_score_data['events']:
         for competition in event['competitions']:
             for competitor in competition['competitors']:
-                score_dict[competitor['team']['abbreviation']] = competitor['score']
+                if competitor['team']['abbreviation'] == 'JAX':
+                    score_dict['JAC'] = competitor['score']
+                else:
+                    score_dict[competitor['team']['abbreviation']] = competitor['score']
     return score_dict
