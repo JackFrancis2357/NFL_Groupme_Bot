@@ -14,9 +14,9 @@ def get_homepage_data(current_week):
     away_home_teams['Away'] = away_home_teams['Away'].map(lambda x: x.rstrip())
     away_home_teams['Home'] = away_home_teams['Home'].map(lambda x: x.lstrip())
 
-    ja_t, jo_t, pa_t, na_t = get_team_abb()
-    weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'patrick', 'nathan'],
-                                      columns=['jack', 'jordan', 'patrick', 'nathan'])
+    ja_t, jo_t, na_t, pa_t = get_team_abb()
+    weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'nathan', 'patrick'],
+                                      columns=['jack', 'jordan', 'nathan', 'patrick'])
 
     # Get current scores
     nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
@@ -35,6 +35,7 @@ def get_homepage_data(current_week):
         away_score = score_dict[away_team]
         home_team = away_home_teams['Home'][i]
         home_score = score_dict[home_team]
+        print(away_team, home_team)
         away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, pa_t, na_t)
         home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, pa_t, na_t)
 
@@ -62,8 +63,8 @@ def get_homepage_data(current_week):
             'owner_color': get_owner_hex_value(weekly_matchups_df.columns[i]),
             'jack': weekly_matchups_df.iloc[i, 0],
             'jordan': weekly_matchups_df.iloc[i, 1],
-            'patrick': weekly_matchups_df.iloc[i, 2],
-            'nathan': weekly_matchups_df.iloc[i, 3],
+            'nathan': weekly_matchups_df.iloc[i, 2],
+            'patrick': weekly_matchups_df.iloc[i, 3],
         }
         owner_matchups.append(doc)
 
