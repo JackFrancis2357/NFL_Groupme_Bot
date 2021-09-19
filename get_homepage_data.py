@@ -27,7 +27,7 @@ def get_homepage_data(current_week):
 
     score_dict = get_current_scores(start_date, final_date)
 
-    matchups_columns = away_home_teams.columns
+    matchups_columns = ['Away', 'Home', 'Status']
     matchups = []
     matchups_two = []
     for i in range(away_home_teams.shape[0]):
