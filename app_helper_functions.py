@@ -47,7 +47,7 @@ def get_team_abb():
     nathan_t = get_team_list(nathan_teams)
     patrick_t = get_team_list(patrick_teams)
 
-    return jack_t, jordan_t, patrick_t, nathan_t
+    return jack_t, jordan_t, nathan_t, patrick_t
 
 
 def get_owner_hex_value(name):
@@ -61,18 +61,18 @@ def get_owner_hex_value(name):
         return '#E27D60'
 
 
-def get_team_owner(team, ja_t, jo_t, pa_t, na_t):
+def get_team_owner(team, ja_t, jo_t, na_t, pa_t):
     if team in ja_t:
         name = 'jack'
         return name, get_owner_hex_value(name)
     elif team in jo_t:
         name = 'jordan'
         return name, get_owner_hex_value(name)
-    elif team in pa_t:
-        name = 'patrick'
-        return name, get_owner_hex_value(name)
     elif team in na_t:
         name = 'nathan'
+        return name, get_owner_hex_value(name)
+    elif team in pa_t:
+        name = 'patrick'
         return name, get_owner_hex_value(name)
     else:
         return 'whoops'
