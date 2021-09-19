@@ -16,6 +16,8 @@
                         <tr>
                             <td class='text-center' style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{ row.Away_Score }}</td>
                             <td class='text-center' style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{ row.Home_Score }}</td>
+                            <td class='text-center'
+                                style="background-color: white"> {{ row.Status }}</td>
                         </tr>
                     {%- endfor %}
                     </tbody>
@@ -36,6 +38,8 @@
                                 style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{ row.Away_Score }}</td>
                             <td class='text-center'
                                 style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{ row.Home_Score }}</td>
+                            <td class='text-center'
+                                style="background-color: white"> {{ row.Status }}</td>
                         </tr>
                     {%- endfor %}
                     </tbody>

@@ -27,14 +27,15 @@ def get_homepage_data(current_week):
 
     score_dict = get_current_scores(start_date, final_date)
 
-    matchups_columns = away_home_teams.columns
+    matchups_columns = ['Away', 'Home', 'Status']
     matchups = []
     matchups_two = []
     for i in range(away_home_teams.shape[0]):
         away_team = away_home_teams['Away'][i]
-        away_score = score_dict[away_team]
+        away_score = score_dict[away_team][0]
         home_team = away_home_teams['Home'][i]
-        home_score = score_dict[home_team]
+        home_score = score_dict[home_team][0]
+        home_status = score_dict[home_team][1]
         away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, na_t, pa_t)
         home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, na_t, pa_t)
 
@@ -44,7 +45,8 @@ def get_homepage_data(current_week):
             'Away_Owner': away_color,
             'Home': home_team,
             'Home_Score': home_score,
-            'Home_Owner': home_color
+            'Home_Owner': home_color,
+            'Status': home_status
         }
         if i < 8:
             matchups.append(doc)
@@ -99,9 +101,18 @@ def get_current_scores(start_date, final_date):
         f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}").json()
     for event in espn_score_data['events']:
         for competition in event['competitions']:
+            try:
+                d_and_d = competition['situation']['downDistanceText']
+            except KeyError:
+                d_and_d = ''
+            status_detail = competition['status']['type']['shortDetail']
+            if d_and_d == '':
+                status = status_detail
+            else:
+                status = status_detail
             for competitor in competition['competitors']:
                 if competitor['team']['abbreviation'] == 'JAX':
-                    score_dict['JAC'] = competitor['score']
+                    score_dict['JAC'] = competitor['score'], status
                 else:
-                    score_dict[competitor['team']['abbreviation']] = competitor['score']
+                    score_dict[competitor['team']['abbreviation']] = competitor['score'], status
     return score_dict
