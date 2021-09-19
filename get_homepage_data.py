@@ -109,7 +109,7 @@ def get_current_scores(start_date, final_date):
             if d_and_d == '':
                 status = status_detail
             else:
-                status = str(status_detail) + ': ' + str(d_and_d)
+                status = str(status_detail) + '\n' + str(d_and_d)
             for competitor in competition['competitors']:
                 if competitor['team']['abbreviation'] == 'JAX':
                     score_dict['JAC'] = competitor['score'], status
