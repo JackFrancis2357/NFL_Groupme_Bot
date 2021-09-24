@@ -2,7 +2,6 @@ import pandas as pd
 from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value
 from groupme_bot_functions import get_standings
 import datetime
-import json
 import requests
 
 
@@ -56,7 +55,6 @@ def get_homepage_data(current_week):
         weekly_matchups_df.loc[away_owner, home_owner] += 1
         weekly_matchups_df.loc[home_owner, away_owner] += 1
 
-    print(weekly_matchups_df)
     owner_matchups = []
     for i in range(weekly_matchups_df.shape[0]):
         weekly_matchups_df.iloc[i, i] /= 2
@@ -69,12 +67,9 @@ def get_homepage_data(current_week):
             'patrick': weekly_matchups_df.iloc[i, 3],
         }
         owner_matchups.append(doc)
-        print(doc)
 
     owner_matchups_columns = [x.capitalize() for x in weekly_matchups_df.columns.tolist()]
-    print(owner_matchups_columns)
     owner_matchups_columns.insert(0, 'Table')
-    print(owner_matchups_columns)
 
     return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns
 
