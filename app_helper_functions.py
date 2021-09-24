@@ -56,9 +56,9 @@ def get_owner_hex_value(name):
         return '#41B3A3'
     elif name == 'jordan':
         return '#E8A87C'
-    elif name == 'patrick':
-        return '#C38D9E'
     elif name == 'nathan':
+        return '#C38D9E'
+    elif name == 'patrick':
         return '#E27D60'
 
 
