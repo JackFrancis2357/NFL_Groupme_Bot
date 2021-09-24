@@ -2,7 +2,6 @@ import pandas as pd
 from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value
 from groupme_bot_functions import get_standings
 import datetime
-import json
 import requests
 
 

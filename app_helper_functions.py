@@ -56,10 +56,10 @@ def get_owner_hex_value(name):
         return '#41B3A3'
     elif name == 'jordan':
         return '#E8A87C'
-    elif name == 'patrick':
-        return '#C38D9E'
     elif name == 'nathan':
         return '#E27D60'
+    elif name == 'patrick':
+        return '#C38D9E'
 
 
 def get_team_owner(team, ja_t, jo_t, na_t, pa_t):
