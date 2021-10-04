@@ -58,21 +58,17 @@ def get_homepage_data(current_week):
         weekly_matchups_df.loc[away_owner, home_owner] += 1
         weekly_matchups_df.loc[home_owner, away_owner] += 1
 
-        if home_score == away_score:
+        if int(home_score) == int(away_score):
             current_week_record_df.loc[home_owner, 'Ties'] += 1
             current_week_record_df.loc[away_owner, 'Ties'] += 1
 
-        elif home_score > away_score:
+        elif int(home_score) > int(away_score):
             current_week_record_df.loc[home_owner, 'Wins'] += 1
             current_week_record_df.loc[away_owner, 'Losses'] += 1
-            print(1, away_team, home_team, away_score, home_score, away_owner, home_owner, current_week_record_df)
 
-        elif away_score > home_score:
+        elif int(away_score) > int(home_score):
             current_week_record_df.loc[home_owner, 'Losses'] += 1
             current_week_record_df.loc[away_owner, 'Wins'] += 1
-            print(2, away_team, home_team, away_score, home_score, away_owner, home_owner, current_week_record_df)
-
-
 
     owner_matchups = []
     for i in range(weekly_matchups_df.shape[0]):
