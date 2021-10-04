@@ -70,6 +70,8 @@ def get_homepage_data(current_week):
             current_week_record_df.loc[home_owner, 'Losses'] += 1
             current_week_record_df.loc[away_owner, 'Wins'] += 1
 
+        print(away_team, home_team, current_week_record_df)
+
     owner_matchups = []
     for i in range(weekly_matchups_df.shape[0]):
         weekly_matchups_df.iloc[i, i] /= 2
