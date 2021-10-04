@@ -109,9 +109,6 @@ def get_standings():
         name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
 
     standings = name_team.merge(nfl_results_df, how='left', on='Team')
-
-    print(standings)
-
     return standings
 
 
