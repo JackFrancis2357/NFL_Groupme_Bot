@@ -26,8 +26,9 @@ Session(app)
 @app.route('/', methods=['GET', 'POST'])
 def homepage():
     week = get_current_week()
-    matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns = get_homepage_data(week)
-    standings_docs, standings_columns = get_homepage_standings()
+    matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns, current_week_record_df = get_homepage_data(
+        week)
+    standings_docs, standings_columns = get_homepage_standings(current_week_record_df)
 
     return render_template('nfl_wins_homepage.html', matchups=matchups, columns=matchups_columns,
                            matchups_two=matchups_two, owner_matchups=owner_matchups,

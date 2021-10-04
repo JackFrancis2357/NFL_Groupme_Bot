@@ -17,6 +17,9 @@ def get_homepage_data(current_week):
     weekly_matchups_df = pd.DataFrame(0, index=['jack', 'jordan', 'nathan', 'patrick'],
                                       columns=['jack', 'jordan', 'nathan', 'patrick'])
 
+    current_week_record_df = pd.DataFrame(0, index=['jack', 'jordan', 'nathan', 'patrick'],
+                                          columns=['Wins', 'Losses', 'Ties'])
+
     # Get current scores
     nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
     final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
@@ -55,6 +58,18 @@ def get_homepage_data(current_week):
         weekly_matchups_df.loc[away_owner, home_owner] += 1
         weekly_matchups_df.loc[home_owner, away_owner] += 1
 
+        if home_score == away_score:
+            current_week_record_df.loc[home_owner, 'Ties'] += 1
+            current_week_record_df.loc[away_owner, 'Ties'] += 1
+
+        elif home_score > away_score:
+            current_week_record_df.loc[home_owner, 'Wins'] += 1
+            current_week_record_df.loc[away_owner, 'Losses'] += 1
+
+        elif away_score > home_score:
+            current_week_record_df.loc[home_owner, 'Losses'] += 1
+            current_week_record_df.loc[away_owner, 'Wins'] += 1
+
     owner_matchups = []
     for i in range(weekly_matchups_df.shape[0]):
         weekly_matchups_df.iloc[i, i] /= 2
@@ -71,23 +86,27 @@ def get_homepage_data(current_week):
     owner_matchups_columns = [x.capitalize() for x in weekly_matchups_df.columns.tolist()]
     owner_matchups_columns.insert(0, 'Table')
 
-    return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns
+    return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns, current_week_record_df
 
 
-def get_homepage_standings():
+def get_homepage_standings(current_week_record_df):
     standings = get_standings()
 
     standings = standings.drop(['Team'], axis=1)
     standings = standings.groupby(by='Name').sum().reset_index()
     standings_columns = standings.columns.tolist()
+    standings_columns.append('Week')
     standings_docs = []
     for i in range(standings.shape[0]):
+        current_record = str(current_week_record_df.iloc[i, 0]) + '-' + str(
+            current_week_record_df.iloc[i, 1]) + '-' + str(current_week_record_df.iloc[i, 2])
         doc = {
             'owner': standings.iloc[i, 0],
             'owner_color': get_owner_hex_value(standings.iloc[i, 0].lower()),
             'wins': standings.iloc[i, 1],
             'losses': standings.iloc[i, 2],
-            'ties': standings.iloc[i, 3]
+            'ties': standings.iloc[i, 3],
+            'current_record': current_record
 
         }
         standings_docs.append(doc)
