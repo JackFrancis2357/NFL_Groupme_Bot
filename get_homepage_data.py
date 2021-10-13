@@ -8,6 +8,7 @@ import requests
 def get_homepage_data(current_week):
     matchups_df = pd.read_csv('./Weekly_Matchups.csv')
     current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
+    current_matchups = current_matchups.loc[(current_matchups != 0).any(axis=1)]
     away_home_teams = current_matchups.str.split(pat='at', expand=True)
     away_home_teams.columns = ['Away', 'Home']
     away_home_teams['Away'] = away_home_teams['Away'].map(lambda x: x.rstrip())
