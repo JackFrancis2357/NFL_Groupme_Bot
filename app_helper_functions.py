@@ -81,7 +81,7 @@ def get_team_owner(team, ja_t, jo_t, na_t, pa_t):
 
 def get_current_week():
     tz = timezone('EST')
-    nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
+    nfl_season_start = datetime.datetime.strptime('09/08/2021', '%m/%d/%Y')
     cur_date = datetime.datetime.now(tz).replace(tzinfo=None)
     delta = cur_date - nfl_season_start
     return max(1, int(np.floor(delta.days / 7) + 1))
