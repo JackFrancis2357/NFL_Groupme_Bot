@@ -22,7 +22,7 @@ def get_homepage_data(current_week):
                                           columns=['Wins', 'Losses', 'Ties'])
 
     # Get current scores
-    nfl_season_start = datetime.datetime.strptime('09/07/2021', '%m/%d/%Y')
+    nfl_season_start = datetime.datetime.strptime('09/08/2021', '%m/%d/%Y')
     final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
     start_date = final_date - datetime.timedelta(days=6)
     final_date = datetime.datetime.strftime(final_date, '%Y%m%d')
