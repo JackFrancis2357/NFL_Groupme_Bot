@@ -134,6 +134,8 @@ def get_current_scores(start_date, final_date):
             for competitor in competition['competitors']:
                 if competitor['team']['abbreviation'] == 'JAX':
                     score_dict['JAC'] = competitor['score'], status
+                elif competitor['team']['abbreviation'] == 'WSH':
+                    score_dict['WAS'] = competitor['score'], status
                 else:
                     score_dict[competitor['team']['abbreviation']] = competitor['score'], status
     return score_dict
