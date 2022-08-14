@@ -33,10 +33,6 @@ def get_teams():
             if team == 'San Francisco 49Ers':
                 big_team[i] = 'San Francisco 49ers'
 
-            # Discrepancy to look at later. I had to change my team mapping to Washington for ESPN, I believe
-            if team == 'Washington Football Team':
-                big_team[i] = 'Washington'
-
     return jack_teams, jordan_teams, nathan_teams, patrick_teams
 
 
