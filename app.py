@@ -83,6 +83,12 @@ def webhook():
             draft_init_message = draft.init_draft(groupme_users, Config["custom_draft_order"])
             return send_message(draft_init_message)
 
+        if current_message.lower() == "draft status":
+            if not draft.draft_active():
+                return
+            teams_draft_message = draft.teams_drafted(Config['season'])
+            return send_message(teams_draft_message)
+
         if current_message.lower().startswith("draft"):
             # Don't let this get triggered without "start draft" first
             if not draft.draft_active():
@@ -90,12 +96,6 @@ def webhook():
 
             selection_message = draft.make_selection(current_user, current_message)
             return send_message(selection_message)
-
-        if current_message.lower() == "status draft":
-            if not draft.draft_active():
-                return
-            teams_draft_message = draft.teams_drafted(Config['season'])
-            return send_message(teams_draft_message)
 
     # Only if message is something we want to reply to do we request data from ESPN
     if current_message in Config['Responses']:
