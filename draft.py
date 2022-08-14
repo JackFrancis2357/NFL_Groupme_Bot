@@ -112,7 +112,7 @@ def make_selection(user, message):
 
 
 def draft_active():
-    result = sql_lib.execute_query("select snake from draft;")
+    result = sql_lib.execute_query(f"select active from draft where season={Config['season']};")
     if result:
         return result[0][0]
 

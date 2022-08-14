@@ -12,4 +12,4 @@ for j in range(1, 19):
             ctr += 1
 
 test_df = df.iloc[:16, -18:]
-test_df.to_csv('Weekly_Matchups.csv')
+test_df.to_csv('2022_weekly_matchups.csv')

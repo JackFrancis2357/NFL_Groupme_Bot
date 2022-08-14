@@ -4,9 +4,11 @@ from groupme_bot_functions import get_standings
 import datetime
 import requests
 
+from configs import Config
+
 
 def get_homepage_data(current_week):
-    matchups_df = pd.read_csv('./Weekly_Matchups.csv')
+    matchups_df = pd.read_csv('./2022_weekly_matchups.csv')
     current_matchups = matchups_df[f'Wk_{current_week}_Matchups']
     current_matchups = current_matchups[current_matchups != '0']
     away_home_teams = current_matchups.str.split(pat='at', expand=True)
@@ -22,7 +24,7 @@ def get_homepage_data(current_week):
                                           columns=['Wins', 'Losses', 'Ties'])
 
     # Get current scores
-    nfl_season_start = datetime.datetime.strptime('09/08/2021', '%m/%d/%Y')
+    nfl_season_start = datetime.datetime.strptime(Config["nfl_season_start_date"], '%m/%d/%Y')
     final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
     start_date = final_date - datetime.timedelta(days=6)
     final_date = datetime.datetime.strftime(final_date, '%Y%m%d')
