@@ -16,14 +16,20 @@ def get_team_list(teams_list):
 
 def get_teams():
     # TODO: Refactor this to at least be a dict of lists so we aren't hard-coding so much
-    jack_teams = [team[0].title() for team in sql_lib.execute_query(
-        f"SELECT team FROM teams WHERE owner='Jack Francis' and season='{Config['season']}';")]
-    jordan_teams = [team[0].title() for team in sql_lib.execute_query(
-        f"SELECT team FROM teams WHERE owner='Jordan Holland' and season='{Config['season']}';")]
-    nathan_teams = [team[0].title() for team in sql_lib.execute_query(
-        f"SELECT team FROM teams WHERE owner='Nathan Lee' and season='{Config['season']}';")]
-    patrick_teams = [team[0].title() for team in sql_lib.execute_query(
-        f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
+    if Config['ENVIRONMENT'] == 'local_dev':
+        jack_teams = Config['Jack']
+        jordan_teams = Config['Jordan']
+        nathan_teams = Config['Nathan']
+        patrick_teams = Config['Patrick']
+    else:
+        jack_teams = [team[0].title() for team in sql_lib.execute_query(
+            f"SELECT team FROM teams WHERE owner='Jack Francis' and season='{Config['season']}';")]
+        jordan_teams = [team[0].title() for team in sql_lib.execute_query(
+            f"SELECT team FROM teams WHERE owner='Jordan Holland' and season='{Config['season']}';")]
+        nathan_teams = [team[0].title() for team in sql_lib.execute_query(
+            f"SELECT team FROM teams WHERE owner='Nathan Lee' and season='{Config['season']}';")]
+        patrick_teams = [team[0].title() for team in sql_lib.execute_query(
+            f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
 
     all_of_us = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
     for big_team in all_of_us:

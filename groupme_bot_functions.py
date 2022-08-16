@@ -81,7 +81,7 @@ def get_standings():
     tree = html.fromstring(r.content)
 
     nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
-    base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
+    base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/section/'
     ctr = 0
     # AFC Teams
     for i in range(1, 21):
