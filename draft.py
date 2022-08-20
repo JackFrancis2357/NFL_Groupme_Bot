@@ -7,7 +7,7 @@ from helpers import sql_lib, templates
 
 def get_teams():
     """Get a list of teams from the database."""
-    result = sql_lib.execute_query("SELECT team FROM seasons;")
+    result = sql_lib.execute_query("SELECT team_name FROM team;")
     teams_list = []
 
     if result:
@@ -18,7 +18,12 @@ def get_teams():
 
 def teams_drafted(season):
     """Get a list of teams drafted so far."""
-    result = sql_lib.execute_query(f"SELECT team FROM teams WHERE season='{season}';")
+    result = sql_lib.execute_query(
+        f"SELECT team_name "
+        f"FROM season "
+        f"JOIN team "
+        f"ON season.team_id = team.id "
+        f"WHERE season='{season}';")
     teams_list = []
 
     drafted_string = ""
@@ -32,12 +37,22 @@ def teams_drafted(season):
 
 def draft_team(user, team, season, position):
     """Enter the draft selection in the database."""
-    _ = sql_lib.execute_query(f"INSERT INTO teams VALUES ('{user}', '{team}', '{season}', {position});", update=True)
+
+    # Get team ID given name
+    team_id = sql_lib.execute_query(f"SELECT team.id FROM team where UPPER(team_name)={team};")[0][0]
+
+    # Record draft selection
+    _ = sql_lib.execute_query(f"INSERT INTO season season, owner_id, team_id, draft_position "
+                              f"SELECT '{season}' as season, player.id, {team_id} as team_id, {position} as draft_position "
+                              f"FROM player "
+                              f"WHERE player.groupme_user_id='{user}';"
+                              )
 
 
 def check_team_draft_status(team, season):
     """Check if a team has already been drafted this year."""
-    query = f"SELECT * FROM teams WHERE team='{team}' AND season='{season}';"
+    query = f"SELECT * FROM season JOIN team on season.team_id  = team.id" \
+                    f" WHERE team_name='{team}' AND season='{season}';"
     return True if sql_lib.execute_query(query) else False
 
 
@@ -51,10 +66,10 @@ def get_username_by_id(user_id, participants):
 def make_selection(user, message):
 
     logging.info(f"Received message: {message} from {user}")
-    query_results = sql_lib.execute_query("select * from draft;")
+    query_results = sql_lib.execute_query(f"select * from draft where season={Config['season']};")
     current_user = query_results[0][2]
     participants = query_results[0][0]
-    team_count = sql_lib.execute_query("select count(*) from teams where season='2021';")[0][0]
+    team_count = sql_lib.execute_query(f"select count(*) from season where season={Config['season']};")[0][0]
 
     # Don't let a user draft out of turn
     if user != current_user:
@@ -76,7 +91,7 @@ def make_selection(user, message):
         logging.info(f"Valid selection of: {selection.upper()}")
         logging.info("Logging user selection in database")
         draft_team(
-            get_username_by_id(current_user, participants),
+            current_user,
             selection.upper(),
             Config['season'],
             team_count + 1

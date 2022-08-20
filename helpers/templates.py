@@ -4,7 +4,7 @@ draft_welcome_message = \
     "To select a team, type 'Draft <team name>'. For example, 'Draft Kansas City Chiefs'. " \
     "Turns are tracked internally, so drafting a team will only be valid when it is your turn. " \
     "Your selection must be the full team name. For instance, Kansas City Chiefs - not Kansas City, " \
-    "KC, Chiefs, etc. For the full list of team names, send 'all teams' in GroupMe.\n\n" \
+    "KC, Chiefs, etc. For the full list of team names, type 'all teams'.\n\n" \
     "The draft order is: 1. {}, 2. {}, 3. {}, 4. {}\n" \
     "Up first is {}. The draft starts when you're ready - good luck!"
 
@@ -20,6 +20,6 @@ end_message = "All teams have been drafted! This concludes the {} draft - good l
 
 out_of_turn = "You cannot select out of turn! {} is on the clock."
 
-selection_taken = "The {} have already been selected. For the list of drafted teams, say 'status draft'"
+selection_taken = "The {} have already been selected. For the list of drafted teams, say 'draft status'"
 
 teams_drafted = "Teams drafted:\n\n{}"
