@@ -39,10 +39,10 @@ def draft_team(user, team, season, position):
     """Enter the draft selection in the database."""
 
     # Get team ID given name
-    team_id = sql_lib.execute_query(f"SELECT team.id FROM team where UPPER(team_name)={team};")[0][0]
+    team_id = sql_lib.execute_query(f"SELECT team.id FROM team where UPPER(team_name)='{team}';")[0][0]
 
     # Record draft selection
-    _ = sql_lib.execute_query(f"INSERT INTO season season, owner_id, team_id, draft_position "
+    _ = sql_lib.execute_query(f"INSERT INTO season (season, owner_id, team_id, draft_position) "
                               f"SELECT '{season}' as season, player.id, {team_id} as team_id, {position} as draft_position "
                               f"FROM player "
                               f"WHERE player.groupme_user_id='{user}';"
@@ -150,7 +150,7 @@ def init_draft(participants, draft_order=None, snake=True):
 
 
 def set_current_drafter():
-    query_results = sql_lib.execute_query("select * from draft;")
+    query_results = sql_lib.execute_query(f"select * from draft where season='{Config['season']}';")
     draft_order = query_results[0][1]
     current_user = query_results[0][2]
     snake = query_results[0][3]
