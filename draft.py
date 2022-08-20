@@ -104,7 +104,7 @@ def make_selection(user, message):
 
         # Set the next drafter - update current_user variable to reflect this
         set_current_drafter()
-        current_user = sql_lib.execute_query("select current_drafter from draft;")[0][0]
+        current_user = sql_lib.execute_query(f"select current_drafter from draft where season='{Config['season']}';")[0][0]
 
         ack_message = templates.draft_acknowledgment.format(
             team_count + 1,
