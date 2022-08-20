@@ -53,7 +53,7 @@ Responses:
   - standings right now
 
 # Switch this config to False for most of the year - only use at draft time
-draft_enabled: False
+draft_enabled: True
 nfl_season_start_date: "09/07/2022"
 owners:
   - Jack Francis
@@ -68,8 +68,8 @@ group_id: "7867099"
 dev_group_id: "59458329"
 custom_draft_order:
   - "9957374"
-  - "13038894"
   - "13529310"
+  - "13038894"
   - "17900487"
 
 # Online App Configs

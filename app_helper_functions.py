@@ -23,13 +23,25 @@ def get_teams():
         patrick_teams = Config['Patrick']
     else:
         jack_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team FROM teams WHERE owner='Jack Francis' and season='{Config['season']}';")]
+            f"SELECT team_name FROM season "
+            f"JOIN team on team.id = season.team_id"
+            f"JOIN player on player.id = season.owner_id "
+            f"WHERE player_name='Jack Francis' and season='{Config['season']}';")]
         jordan_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team FROM teams WHERE owner='Jordan Holland' and season='{Config['season']}';")]
+            f"SELECT team_name FROM season "
+            f"JOIN team on team.id = season.team_id"
+            f"JOIN player on player.id = season.owner_id "
+            f"WHERE owner='Jordan Holland' and season='{Config['season']}';")]
         nathan_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team FROM teams WHERE owner='Nathan Lee' and season='{Config['season']}';")]
+            f"SELECT team_name FROM season "
+            f"JOIN team on team.id = season.team_id"
+            f"JOIN player on player.id = season.owner_id "
+            f"WHERE owner='Nathan Lee' and season='{Config['season']}';")]
         patrick_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team FROM teams WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
+            f"SELECT team_name FROM season "
+            f"JOIN team on team.id = season.team_id"
+            f"JOIN player on player.id = season.owner_id "
+            f"WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
 
     all_of_us = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
     for big_team in all_of_us:
