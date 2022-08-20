@@ -66,10 +66,10 @@ def get_username_by_id(user_id, participants):
 def make_selection(user, message):
 
     logging.info(f"Received message: {message} from {user}")
-    query_results = sql_lib.execute_query(f"select * from draft where season={Config['season']};")
+    query_results = sql_lib.execute_query(f"select * from draft where season='{Config['season']}';")
     current_user = query_results[0][2]
     participants = query_results[0][0]
-    team_count = sql_lib.execute_query(f"select count(*) from season where season={Config['season']};")[0][0]
+    team_count = sql_lib.execute_query(f"select count(*) from season where season='{Config['season']}';")[0][0]
 
     # Don't let a user draft out of turn
     if user != current_user:
@@ -127,7 +127,7 @@ def make_selection(user, message):
 
 
 def draft_active():
-    result = sql_lib.execute_query(f"select active from draft where season={Config['season']};")
+    result = sql_lib.execute_query(f"select active from draft where season='{Config['season']}';")
     if result:
         return result[0][0]
 
