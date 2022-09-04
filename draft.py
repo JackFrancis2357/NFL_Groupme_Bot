@@ -52,7 +52,7 @@ def draft_team(user, team, season, position):
 def check_team_draft_status(team, season):
     """Check if a team has already been drafted this year."""
     query = f"SELECT * FROM season JOIN team on season.team_id  = team.id" \
-                    f" WHERE team_name='{team}' AND season='{season}';"
+                    f" WHERE upper(team_name)='{team}' AND season='{season}';"
     return True if sql_lib.execute_query(query) else False
 
 
