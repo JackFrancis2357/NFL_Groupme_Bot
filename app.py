@@ -125,8 +125,8 @@ def webhook():
 
     elif current_message[:4].lower() == '!who':
         # I think this can be teams_list = [get_teams()] but will test later
-        jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
-        teams_list = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
+        teams = get_teams()
+        teams_list = [teams["Jack"], teams["Jordan"], teams["Nathan"], teams["Patrick"]]
         names = ['Jack', 'Jordan', 'Nathan', 'Patrick']
         team_id = current_message[6:]
         for owner in range(4):
