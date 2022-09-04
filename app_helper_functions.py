@@ -17,50 +17,44 @@ def get_team_list(teams_list):
 def get_teams():
     # TODO: Refactor this to at least be a dict of lists so we aren't hard-coding so much
     if Config['ENVIRONMENT'] == 'local_dev':
-        jack_teams = Config['Jack']
-        jordan_teams = Config['Jordan']
-        nathan_teams = Config['Nathan']
-        patrick_teams = Config['Patrick']
+        teams = {
+            "Jack": Config["Jack"],
+            "Jordan": Config["Jordan"],
+            "Nathan": Config["Nathan"],
+            "Patrick": Config["Patrick"]
+        }
     else:
-        jack_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team_name FROM season "
-            f"JOIN team on team.id = season.team_id"
-            f"JOIN player on player.id = season.owner_id "
-            f"WHERE player_name='Jack Francis' and season='{Config['season']}';")]
-        jordan_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team_name FROM season "
-            f"JOIN team on team.id = season.team_id"
-            f"JOIN player on player.id = season.owner_id "
-            f"WHERE owner='Jordan Holland' and season='{Config['season']}';")]
-        nathan_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team_name FROM season "
-            f"JOIN team on team.id = season.team_id"
-            f"JOIN player on player.id = season.owner_id "
-            f"WHERE owner='Nathan Lee' and season='{Config['season']}';")]
-        patrick_teams = [team[0].title() for team in sql_lib.execute_query(
-            f"SELECT team_name FROM season "
-            f"JOIN team on team.id = season.team_id"
-            f"JOIN player on player.id = season.owner_id "
-            f"WHERE owner='Patrick Cooper' and season='{Config['season']}';")]
+        teams = {}
+        base_query = "SELECT team_name FROM season " \
+            "JOIN team on team.id = season.team_id " \
+            "JOIN player on player.id = season.owner_id " \
+            "WHERE player_name='{}' and season='{}';"
+        teams["Jack"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Jack Francis", "2022"))]
+        teams["Jordan"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Jordan Holland", "2022"))]
+        teams["Patrick"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Patrick Cooper", "2022"))]
+        teams["Nathan"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Nathan Lee", "2022"))]
 
-    all_of_us = [jack_teams, jordan_teams, nathan_teams, patrick_teams]
-    for big_team in all_of_us:
+    all_teams = []
+    for lst in teams.values():
+        all_teams += [val for val in lst]
+    teams["all"] = all_teams
+    for big_team in all_teams:
         for i, team in enumerate(big_team):
 
             # Title uppercases the first letter, so the e gets capitalized in 49ers
             if team == 'San Francisco 49Ers':
                 big_team[i] = 'San Francisco 49ers'
 
-    return jack_teams, jordan_teams, nathan_teams, patrick_teams
+    return teams
 
 
 def get_team_abb():
-    jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
+    teams = get_teams()
 
-    jack_t = get_team_list(jack_teams)
-    jordan_t = get_team_list(jordan_teams)
-    nathan_t = get_team_list(nathan_teams)
-    patrick_t = get_team_list(patrick_teams)
+    jack_t = get_team_list(teams["Jack"])
+    jordan_t = get_team_list(teams["Jordan"])
+    nathan_t = get_team_list(teams["Nathan"])
+    patrick_t = get_team_list(teams["Patrick"])
 
     return jack_t, jordan_t, nathan_t, patrick_t
 

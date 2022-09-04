@@ -76,11 +76,22 @@ def get_team_data_espn(tree, base_xpath, i, conference_div):
     return team_name, wins, losses, ties
 
 
+# NOT IN USE - need to debug to get this working
+def get_conference(standings_df: pd.DataFrame, tree: html.HtmlElement, base_xpath: str, conf_div: int, rng: int = 21):
+    """Get a particular conference table from ESPN web page."""
+    for i in range(1, rng):
+        team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=conf_div)
+        if team_name == "error":
+            continue
+        standings_df = pd.concat([standings_df, pd.DataFrame({"Team": [team_name], "Wins": [wins], "Losses": [losses], "Ties": [ties]})], ignore_index=True)
+    return standings_df
+
+
 def get_standings():
     r = requests.get("https://www.espn.com/nfl/standings")
     tree = html.fromstring(r.content)
 
-    nfl_results_df = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
+    standings = pd.DataFrame(0, index=range(32), columns=['Team', 'Wins', 'Losses', 'Ties'])
     base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/section/'
     ctr = 0
     # AFC Teams
@@ -88,7 +99,7 @@ def get_standings():
         team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=1)
         if team_name == 'error':
             continue
-        nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
+        standings.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
     # NFC Teams
@@ -96,19 +107,15 @@ def get_standings():
         team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=2)
         if team_name == 'error':
             continue
-        nfl_results_df.iloc[ctr, :] = team_name, wins, losses, ties
+        standings.iloc[ctr, :] = team_name, wins, losses, ties
         ctr += 1
 
-    jack_teams, jordan_teams, nathan_teams, patrick_teams = get_teams()
-    all_teams = jack_teams + jordan_teams + patrick_teams + nathan_teams
+    # Get teams and their owners and remove `all` key to prevent all teams matching in team-name mask below
+    teams = get_teams()
+    teams.pop("all")
 
-    name_team = pd.DataFrame(columns=['Name', 'Team'])
-    name_team['Team'] = all_teams
-    for team_list, name in zip([jack_teams, jordan_teams, nathan_teams, patrick_teams],
-                               ['Jack', 'Jordan', 'Nathan', 'Patrick']):
-        name_team.loc[name_team['Team'].isin(team_list), 'Name'] = name
-
-    standings = name_team.merge(nfl_results_df, how='left', on='Team')
+    for owner, tm in teams.items():
+        standings.loc[standings["Team"].isin(tm), "Name"] = owner
     return standings
 
 
