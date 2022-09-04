@@ -87,7 +87,7 @@ def webhook():
             return
 
         if current_message.lower() == "draft available teams":
-            return send_message(f"Teams Available: {draft.get_teams_remaining()}")
+            return send_message(f"Teams Available:\n{draft.get_teams_remaining()}")
         elif current_message.lower() == "draft status":
             teams_draft_message = draft.teams_drafted(Config['season'])
             return send_message(teams_draft_message)
