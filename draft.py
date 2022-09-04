@@ -56,6 +56,16 @@ def check_team_draft_status(team, season):
     return True if sql_lib.execute_query(query) else False
 
 
+def get_teams_remaining():
+    query_results = sql_lib.execute_query(f"SELECT team_name FROM team"
+            f" JOIN (select id from team where not exists (select from season where season={Config['season']}"
+            f" and team.id=season.team_id)) as team_result on team.id=team_result.id;")
+    result_string = ""
+    for res in query_results:
+        result_string += f"{res[0]}\n"
+    return result_string
+
+
 def get_username_by_id(user_id, participants):
     """Helper method to get name given ID."""
     for user in participants:
