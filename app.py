@@ -101,6 +101,7 @@ def webhook():
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if current_message == 'standings':
+            logging.info(f"Forming standings message with standings: {standings}")
             message = get_standings_message(standings)
             return send_message(message)
 
