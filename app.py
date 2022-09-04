@@ -74,7 +74,7 @@ def webhook():
     split_current_message = current_message.split()
 
     ######################
-    ## 2021 DRAFT LOGIC ##
+    ##### DRAFT LOGIC #####
     ######################
     if Config["draft_enabled"]:
 
@@ -83,17 +83,15 @@ def webhook():
             draft_init_message = draft.init_draft(groupme_users, Config["custom_draft_order"])
             return send_message(draft_init_message)
 
-        if current_message.lower() == "draft status":
-            if not draft.draft_active():
-                return
+        if not draft.draft_active():
+            return
+
+        if current_message.lower() == "draft available teams":
+            return send_message(f"Teams Available: {draft.get_teams_remaining()}")
+        elif current_message.lower() == "draft status":
             teams_draft_message = draft.teams_drafted(Config['season'])
             return send_message(teams_draft_message)
-
-        if current_message.lower().startswith("draft"):
-            # Don't let this get triggered without "start draft" first
-            if not draft.draft_active():
-                return
-
+        elif current_message.lower().startswith("draft"):
             selection_message = draft.make_selection(current_user, current_message)
             return send_message(selection_message)
 
