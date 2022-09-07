@@ -96,7 +96,8 @@ def webhook():
             return send_message(selection_message)
 
     # Only if message is something we want to reply to do we request data from ESPN
-    if current_message in Config['Responses']:
+    elif current_message in Config['Responses']:
+        logging.info("A Response was identified")
         standings = get_standings()
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
