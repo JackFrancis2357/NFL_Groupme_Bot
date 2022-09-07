@@ -10,6 +10,8 @@ from helpers import sql_lib
 def get_team_list(teams_list):
     team_abb_list = []
     for team in teams_list:
+        if team == 'San Francisco 49Ers':
+            team = 'San Francisco 49ers'
         team_abb_list.append(configs.team_mapping_configs[team][0])
     return team_abb_list
 
