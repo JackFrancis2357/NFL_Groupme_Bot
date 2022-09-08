@@ -55,12 +55,12 @@ def get_teams():
     for lst in teams.values():
         all_teams += [val for val in lst]
     teams["all"] = all_teams
-    for big_team in all_teams:
-        for i, team in enumerate(big_team):
-
-            # Title uppercases the first letter, so the e gets capitalized in 49ers
-            if team == 'San Francisco 49Ers':
-                big_team[i] = 'San Francisco 49ers'
+    # for big_team in all_teams:
+    #     for i, team in enumerate(big_team):
+    #
+    #         # Title uppercases the first letter, so the e gets capitalized in 49ers
+    #         if team == 'San Francisco 49Ers':
+    #             big_team[i] = 'San Francisco 49ers'
 
     return teams
 

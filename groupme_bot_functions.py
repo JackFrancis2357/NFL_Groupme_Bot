@@ -113,13 +113,10 @@ def get_standings():
 
     # Get teams and their owners and remove `all` key to prevent all teams matching in team-name mask below
     teams = get_teams()
-    logging.info(teams)
     teams.pop("all")
 
     for owner, tm in teams.items():
-        logging.info(tm, owner)
         standings.loc[standings["Team"].isin(tm), "Name"] = owner
-    logging.info(standings)
     return standings
 
 
