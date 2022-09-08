@@ -95,8 +95,10 @@ def webhook():
             selection_message = draft.make_selection(current_user, current_message)
             return send_message(selection_message)
 
+    logging.info(Config['Responses'])
+
     # Only if message is something we want to reply to do we request data from ESPN
-    elif current_message in Config['Responses']:
+    if current_message in Config['Responses']:
         logging.info("A Response was identified")
         standings = get_standings()
 

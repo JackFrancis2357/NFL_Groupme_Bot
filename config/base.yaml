@@ -53,7 +53,7 @@ Responses:
   - standings right now
 
 # Switch this config to False for most of the year - only use at draft time
-draft_enabled: True
+draft_enabled: False
 nfl_season_start_date: "09/07/2022"
 owners:
   - Jack Francis
