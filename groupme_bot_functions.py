@@ -47,9 +47,10 @@ def get_standings_message(standings):
     names.sort()
     wins = [int(i) for i in standings.groupby('Name').sum().reset_index()['Wins'].tolist()]
     losses = [int(i) for i in standings.groupby('Name').sum().reset_index()['Losses'].tolist()]
+    ties = [int(i) for i in standings.groupby('Name').sum().reset_index()['Ties'].tolist()]
     message = str()
     for i in range(0, len(names)):
-        message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) + '\n'
+        message += names[i] + ': ' + str(wins[i]) + '-' + str(losses[i]) +  '-' + str(ties[i]) + '\n'
     return (message)
 
 
