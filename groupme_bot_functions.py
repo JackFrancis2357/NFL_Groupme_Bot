@@ -2,9 +2,9 @@ import logging
 import os
 import requests
 import pandas as pd
-from lxml import html
+
 from app_helper_functions import get_teams, get_start_final_date
-import configs
+from configs import Config
 
 
 def send_message(msg):
@@ -83,11 +83,11 @@ def get_standings(current_week):
 
 
 def get_schedule(team_id, starting_week, finishing_week=18):
-    for k, v in configs.team_mapping_configs["TEAMS"]:
+    for k, v in Config["TEAMS"]:
         if team_id in k:
             team_abbreviation = v["Abbrev"]
 
-    nfl_schedule_df = pd.read_csv("./NFL_Schedule_Data/2023_NFL_Schedule_Grid.csv")
+    nfl_schedule_df = pd.read_csv(Config["BASE_CONFIG"]["grid_filepath"])
     try:
         schedule = nfl_schedule_df.loc[nfl_schedule_df["Team"] == team_abbreviation]
     except:

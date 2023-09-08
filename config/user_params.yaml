@@ -1,0 +1,17 @@
+USERS:
+  Jack:
+    groupmeid: "13038894"
+    hexcolor: "#41B3A3"
+    ownername: "Jack Francis"
+  Jordan:
+    groupmeid: "13529310"
+    hexcolor: "#E8A87C"
+    ownername: "Jordan Holland"
+  Nathan:
+    groupmeid: "17900487"
+    hexcolor: "#E27D60"
+    ownername: "Nathan Lee"
+  Patrick:
+    groupmeid: "9957374"
+    hexcolor: "#C38D9E"
+    ownername: "Patrick Cooper"
