@@ -4,7 +4,8 @@ from pytz import timezone
 
 import configs
 from configs import Config
-from helpers import sql_lib
+
+# from helpers import sql_lib
 
 
 def get_team_list(teams_list):
@@ -25,29 +26,30 @@ def fix_49ers(team):
 
 def get_teams():
     # TODO: Refactor this to at least be a dict of lists so we aren't hard-coding so much
-    if Config["ENVIRONMENT"] == "local_dev":
-        teams = {
-            "Jack": Config["Jack"],
-            "Jordan": Config["Jordan"],
-            "Nathan": Config["Nathan"],
-            "Patrick": Config["Patrick"],
-        }
-    else:
-        teams = {}
-        base_query = (
-            "SELECT team_name FROM season "
-            "JOIN team on team.id = season.team_id "
-            "JOIN player on player.id = season.owner_id "
-            "WHERE player_name='{}' and season='{}';"
-        )
-        teams["Jack"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Jack Francis", "2022"))]
-        teams["Jordan"] = [
-            team[0].title() for team in sql_lib.execute_query(base_query.format("Jordan Holland", "2022"))
-        ]
-        teams["Patrick"] = [
-            team[0].title() for team in sql_lib.execute_query(base_query.format("Patrick Cooper", "2022"))
-        ]
-        teams["Nathan"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Nathan Lee", "2022"))]
+    # if Config["ENVIRONMENT"] == "local_dev":
+    teams = {
+        "Jack": Config["Jack"],
+        "Jordan": Config["Jordan"],
+        "Nathan": Config["Nathan"],
+        "Patrick": Config["Patrick"],
+    }
+    # TODO Enable Draft with Postgres on Render and other DB functionality. Commenting out to get core functionaltiy
+    # else:
+    #     teams = {}
+    #     base_query = (
+    #         "SELECT team_name FROM season "
+    #         "JOIN team on team.id = season.team_id "
+    #         "JOIN player on player.id = season.owner_id "
+    #         "WHERE player_name='{}' and season='{}';"
+    #     )
+    #     teams["Jack"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Jack Francis", "2022"))]
+    #     teams["Jordan"] = [
+    #         team[0].title() for team in sql_lib.execute_query(base_query.format("Jordan Holland", "2022"))
+    #     ]
+    #     teams["Patrick"] = [
+    #         team[0].title() for team in sql_lib.execute_query(base_query.format("Patrick Cooper", "2022"))
+    #     ]
+    #     teams["Nathan"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Nathan Lee", "2022"))]
 
     # Check for 49Ers
     teams["Jack"] = fix_49ers(teams["Jack"])
@@ -59,13 +61,6 @@ def get_teams():
     for lst in teams.values():
         all_teams += [val for val in lst]
     teams["all"] = all_teams
-    # for big_team in all_teams:
-    #     for i, team in enumerate(big_team):
-    #
-    #         # Title uppercases the first letter, so the e gets capitalized in 49ers
-    #         if team == 'San Francisco 49Ers':
-    #             big_team[i] = 'San Francisco 49ers'
-
     return teams
 
 

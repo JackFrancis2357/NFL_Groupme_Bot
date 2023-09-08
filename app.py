@@ -1,7 +1,7 @@
 import logging
 import os
 
-import draft
+# import draft
 from configs import Config
 from helpers import groupme_lib, setup_logger
 
@@ -88,23 +88,24 @@ def webhook():
     ######################
     ##### DRAFT LOGIC #####
     ######################
-    if Config["draft_enabled"]:
-        # Start draft if it isn't already active
-        if current_message.lower() == "start draft" and not draft.draft_active():
-            draft_init_message = draft.init_draft(groupme_users, Config["custom_draft_order"])
-            return send_message(draft_init_message)
+    # TODO Enable Draft with Postgres on Render and other DB functionality. Commenting out to get core functionaltiy
+    # if Config["draft_enabled"]:
+    #     # Start draft if it isn't already active
+    #     if current_message.lower() == "start draft" and not draft.draft_active():
+    #         draft_init_message = draft.init_draft(groupme_users, Config["custom_draft_order"])
+    #         return send_message(draft_init_message)
 
-        if not draft.draft_active():
-            return
+    #     if not draft.draft_active():
+    #         return
 
-        if current_message.lower() == "draft available teams":
-            return send_message(f"Teams Available:\n{draft.get_teams_remaining()}")
-        elif current_message.lower() == "draft status":
-            teams_draft_message = draft.teams_drafted(Config["season"])
-            return send_message(teams_draft_message)
-        elif current_message.lower().startswith("draft"):
-            selection_message = draft.make_selection(current_user, current_message)
-            return send_message(selection_message)
+    #     if current_message.lower() == "draft available teams":
+    #         return send_message(f"Teams Available:\n{draft.get_teams_remaining()}")
+    #     elif current_message.lower() == "draft status":
+    #         teams_draft_message = draft.teams_drafted(Config["season"])
+    #         return send_message(teams_draft_message)
+    #     elif current_message.lower().startswith("draft"):
+    #         selection_message = draft.make_selection(current_user, current_message)
+    #         return send_message(selection_message)
 
     logging.info(Config["Responses"])
 

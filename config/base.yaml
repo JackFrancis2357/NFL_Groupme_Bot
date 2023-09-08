@@ -55,7 +55,7 @@ Responses:
 
 # Switch this config to False for most of the year - only use at draft time
 draft_enabled: False
-nfl_season_start_date: "09/07/2022"
+nfl_season_start_date: "09/05/2023"
 owners:
   - Jack Francis
   - Jordan Holland
@@ -63,8 +63,8 @@ owners:
   - Patrick Cooper
 sql_flavor: postgres
 num_teams: 32
-espn_url: https://www.espn.com/nfl/standings/_/season/2022
-season: "2022"
+espn_url: https://www.espn.com/nfl/standings/_/season/2023
+season: "2023"
 group_id: "7867099"
 dev_group_id: "59458329"
 custom_draft_order:

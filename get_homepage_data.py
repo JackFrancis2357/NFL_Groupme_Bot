@@ -8,7 +8,7 @@ from configs import Config
 
 
 def get_homepage_data(current_week):
-    matchups_df = pd.read_csv("./2022_weekly_matchups.csv")
+    matchups_df = pd.read_csv("./2023_weekly_matchups.csv")
     current_matchups = matchups_df[f"Wk_{current_week}_Matchups"]
     current_matchups = current_matchups[current_matchups != "0"]
     away_home_teams = current_matchups.str.split(pat="at", expand=True)
