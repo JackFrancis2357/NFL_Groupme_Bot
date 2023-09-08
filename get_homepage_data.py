@@ -98,7 +98,7 @@ def get_homepage_data(current_week):
 
 def get_homepage_standings(current_week_record_df):
     standings = get_standings()
-
+    print(standings)
     standings = standings.drop(["Team"], axis=1)
     standings = standings.groupby(by="Name").sum().reset_index()
     standings_columns = standings.columns.tolist()

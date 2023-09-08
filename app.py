@@ -35,6 +35,7 @@ def homepage():
         current_week_record_df,
     ) = get_homepage_data(week)
     standings_docs, standings_columns = get_homepage_standings(current_week_record_df)
+    print(standings_docs, standings_columns)
 
     return render_template(
         "nfl_wins_homepage.html",
