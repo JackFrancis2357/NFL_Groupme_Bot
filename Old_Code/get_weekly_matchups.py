@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("./2023_NFL_Schedule_Grid.csv")
+df = pd.read_csv("../2023_NFL_Schedule_Grid.csv")
 
 # Need to create a csv with "team 1 at team 2" for each week of season
 for j in range(1, 19):
