@@ -1,5 +1,5 @@
 import pandas as pd
-from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value, get_start_final_date
+from app_helper_functions import get_team_abb, get_team_owner, get_start_final_date
 from groupme_bot_functions import get_standings
 import datetime
 import requests
@@ -8,8 +8,8 @@ from configs import Config
 
 
 def get_homepage_data(current_week):
-    default_name_ordering = ["jack", "jordan", "nathan", "patrick"]
-    matchups_df = pd.read_csv("./NFL_Schedule_Data/2023_weekly_matchups.csv")
+    default_name_ordering = ["Jack", "Jordan", "Nathan", "Patrick"]
+    matchups_df = pd.read_csv(Config["BASE_CONFIG"]["weekly_matchups_filepath"])
     current_matchups = matchups_df[f"Wk_{current_week}_Matchups"]
     current_matchups = current_matchups[current_matchups != "0"]
     away_home_teams = current_matchups.str.split(pat="at", expand=True)
@@ -69,17 +69,18 @@ def get_homepage_data(current_week):
     owner_matchups = []
     for i in range(weekly_matchups_df.shape[0]):
         weekly_matchups_df.iloc[i, i] /= 2
+        owner_name = weekly_matchups_df.columns[i].capitalize()
         doc = {
-            "owner": weekly_matchups_df.columns[i].capitalize(),
-            "owner_color": get_owner_hex_value(weekly_matchups_df.columns[i]),
-            "jack": weekly_matchups_df.iloc[i, 0],
-            "jordan": weekly_matchups_df.iloc[i, 1],
-            "nathan": weekly_matchups_df.iloc[i, 2],
-            "patrick": weekly_matchups_df.iloc[i, 3],
+            "owner": owner_name,
+            "owner_color": Config["USERS"][owner_name]["hexcolor"],
+            "Jack": weekly_matchups_df.iloc[i, 0],
+            "Jordan": weekly_matchups_df.iloc[i, 1],
+            "Nathan": weekly_matchups_df.iloc[i, 2],
+            "Patrick": weekly_matchups_df.iloc[i, 3],
         }
         owner_matchups.append(doc)
 
-    owner_matchups_columns = [x.capitalize() for x in weekly_matchups_df.columns.tolist()]
+    owner_matchups_columns = [x for x in weekly_matchups_df.columns.tolist()]
     owner_matchups_columns.insert(0, "Table")
 
     return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns, current_week_record_df
@@ -100,9 +101,10 @@ def get_homepage_standings(current_week_record_df, current_week):
             + "-"
             + str(current_week_record_df.iloc[i, 2])
         )
+        owner_name = standings.iloc[i, 0]
         doc = {
-            "owner": standings.iloc[i, 0],
-            "owner_color": get_owner_hex_value(standings.iloc[i, 0].lower()),
+            "owner": owner_name,
+            "owner_color": Config["USERS"][owner_name]["hexcolor"],
             "wins": standings.iloc[i, 1],
             "losses": standings.iloc[i, 2],
             "ties": standings.iloc[i, 3],

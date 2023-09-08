@@ -1,0 +1,40 @@
+USER_TEAMS:
+  Jack:
+    - Cincinnati Bengals
+    - Baltimore Ravens
+    - Miami Dolphins
+    - Los Angeles Chargers
+    - New York Giants
+    - Denver Broncos
+    - Chicago Bears
+    - Washington Commanders
+
+  Jordan:
+    - Philadelphia Eagles
+    - San Francisco 49ers
+    - Jacksonville Jaguars
+    - Detroit Lions
+    - Cleveland Browns
+    - Atlanta Falcons
+    - Carolina Panthers
+    - Indianapolis Colts
+
+  Patrick:
+    - Kansas City Chiefs
+    - Pittsburgh Steelers
+    - New York Jets
+    - Seattle Seahawks
+    - Green Bay Packers
+    - New England Patriots
+    - Houston Texans
+    - Arizona Cardinals
+
+  Nathan:
+    - Buffalo Bills 
+    - Dallas Cowboys
+    - New Orleans Saints 
+    - Minnesota Vikings 
+    - Tennessee Titans 
+    - Los Angeles Rams 
+    - Las Vegas Raiders 
+    - Tampa Bay Buccaneers 

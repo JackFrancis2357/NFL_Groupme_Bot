@@ -1,48 +1,4 @@
-# Teams
-
-# TODO: Remove once all functionality is transitioned to Postgres
-Jack:
-  - Cincinnati Bengals
-  - Baltimore Ravens
-  - Miami Dolphins
-  - Los Angeles Chargers
-  - New York Giants
-  - Denver Broncos
-  - Chicago Bears
-  - Washington Commanders
-
-Jordan:
-  - Philadelphia Eagles
-  - San Francisco 49ers
-  - Jacksonville Jaguars
-  - Detroit Lions
-  - Cleveland Browns
-  - Atlanta Falcons
-  - Carolina Panthers
-  - Indianapolis Colts
-
-Patrick:
-  - Kansas City Chiefs
-  - Pittsburgh Steelers
-  - New York Jets
-  - Seattle Seahawks
-  - Green Bay Packers
-  - New England Patriots
-  - Houston Texans
-  - Arizona Cardinals
-
-Nathan:
-  - Buffalo Bills 
-  - Dallas Cowboys
-  - New Orleans Saints 
-  - Minnesota Vikings 
-  - Tennessee Titans 
-  - Los Angeles Rams 
-  - Las Vegas Raiders 
-  - Tampa Bay Buccaneers 
-
-
-Responses:
+RESPONSES:
   - standings
   - patrick teams
   - jack teams
@@ -54,25 +10,28 @@ Responses:
   - standings right now
 
 # Switch this config to False for most of the year - only use at draft time
-draft_enabled: False
-nfl_season_start_date: "09/05/2023"
-owners:
-  - Jack Francis
-  - Jordan Holland
-  - Nathan Lee
-  - Patrick Cooper
-sql_flavor: postgres
-num_teams: 32
-espn_url: https://www.espn.com/nfl/standings/_/season/2023
-season: "2023"
-group_id: "7867099"
-dev_group_id: "59458329"
-custom_draft_order:
-  - "9957374"
-  - "13529310"
-  - "13038894"
-  - "17900487"
+DRAFT_CONFIG:
+  draft_enabled: False
+  custom_draft_order:
+    - "9957374"
+    - "13529310"
+    - "13038894"
+    - "17900487"
+  num_teams: 32
+  sql_flavor: postgres
 
-# Online App Configs
-test_url: https://nfl-groupme-bot.herokuapp.com
-prod_url: https://nfl-groupme-flask-bot.herokuapp.com
+BASE_CONFIG:
+  season: "2023"
+  nfl_season_start_date: "09/05/2023"
+  owners:
+    - Jack Francis
+    - Jordan Holland
+    - Nathan Lee
+    - Patrick Cooper
+  group_id: "7867099"
+  dev_group_id: "59458329"
+  # Online App Configs
+  test_url: https://nfl-groupme-bot.onrender.com
+  prod_url: https://nfl-groupme-flask-bot.onrender.com
+  grid_filepath: ./NFL_Schedule_Data/2023_NFL_Schedule_Grid.csv
+  weekly_matchups_filepath: ./NFL_Schedule_Data/2023_weekly_matchups.csv

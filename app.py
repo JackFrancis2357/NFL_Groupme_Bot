@@ -48,7 +48,6 @@ def homepage():
 
 @app.route("/groupmebot", methods=["POST"])
 def webhook():
-
     # json we receive for every message in the chat
     data = request.get_json()
     logging.info(f"Received: {data}")
@@ -87,10 +86,10 @@ def webhook():
     #         selection_message = draft.make_selection(current_user, current_message)
     #         return send_message(selection_message)
 
-    logging.info(Config["Responses"])
+    logging.info(Config["RESPONSES"])
 
     # Only if message is something we want to reply to do we request data from ESPN
-    if current_message in Config["Responses"]:
+    if current_message in Config["RESPONSES"]:
         week = get_current_week()
         standings = get_standings(week)
 
@@ -114,7 +113,7 @@ def webhook():
                 user = next(item for item in groupme_users if item["user_id"] == current_user)["name"].split()[0]
                 return_contestant(user, standings)
         elif current_message == "nfl bot help":
-            options = Config["Responses"]
+            options = Config["RESPONSES"]
             header = "Input options for the NFL Wins Tracker bot:\n"
             message = header + "\n".join(options)
             return send_message(message)
@@ -133,7 +132,9 @@ def webhook():
                     if team_id in team:
                         return send_message(names[owner])
     elif current_message == "weblink":
-        host = Config["test_url"] if Config["ENVIRONMENT"] == "TEST" else Config["prod_url"]
+        host = (
+            Config["BASE_CONFIG"]["test_url"] if Config["ENVIRONMENT"] == "TEST" else Config["BASE_CONFIG"]["prod_url"]
+        )
         return send_message(host)
 
     elif split_current_message[0] == "schedule":

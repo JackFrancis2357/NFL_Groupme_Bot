@@ -5,7 +5,7 @@ import requests
 from configs import Config
 
 
-def get_users(group_id=Config["group_id"], ids_only=False):
+def get_users(group_id=Config["BASE_CONFIG"]["group_id"], ids_only=False):
     """Get users for a specified group - default of Buttered Toast."""
     users_json = requests.get(
         f"https://api.groupme.com/v3/groups/{group_id}?token={os.getenv('TOKEN')}"
