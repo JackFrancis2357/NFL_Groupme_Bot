@@ -87,7 +87,7 @@ def get_standings(current_week):
 
 
 def get_schedule(team_id, starting_week, finishing_week=18):
-    for k, v in Config["TEAMS"]:
+    for k, v in Config["TEAMS"].items():
         if team_id in k:
             team_abbreviation = v["Abbrev"]
 
