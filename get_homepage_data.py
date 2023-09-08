@@ -8,6 +8,7 @@ from configs import Config
 
 
 def get_homepage_data(current_week):
+    default_name_ordering = ["jack", "jordan", "nathan", "patrick"]
     matchups_df = pd.read_csv("./2023_weekly_matchups.csv")
     current_matchups = matchups_df[f"Wk_{current_week}_Matchups"]
     current_matchups = current_matchups[current_matchups != "0"]
@@ -17,13 +18,8 @@ def get_homepage_data(current_week):
     away_home_teams["Home"] = away_home_teams["Home"].map(lambda x: x.lstrip())
 
     ja_t, jo_t, na_t, pa_t = get_team_abb()
-    weekly_matchups_df = pd.DataFrame(
-        0, index=["jack", "jordan", "nathan", "patrick"], columns=["jack", "jordan", "nathan", "patrick"]
-    )
-
-    current_week_record_df = pd.DataFrame(
-        0, index=["jack", "jordan", "nathan", "patrick"], columns=["Wins", "Losses", "Ties"]
-    )
+    weekly_matchups_df = pd.DataFrame(0, index=default_name_ordering, columns=default_name_ordering)
+    current_week_record_df = pd.DataFrame(0, index=default_name_ordering, columns=["Wins", "Losses", "Ties"])
 
     # Get current scores
     nfl_season_start = datetime.datetime.strptime(Config["nfl_season_start_date"], "%m/%d/%Y")
@@ -43,9 +39,7 @@ def get_homepage_data(current_week):
         home_team = away_home_teams["Home"][i]
         home_score = score_dict[home_team][0]
         home_status = score_dict[home_team][1]
-        print(get_team_owner(str(away_team), ja_t, jo_t, na_t, pa_t))
         away_owner, away_color = get_team_owner(str(away_team), ja_t, jo_t, na_t, pa_t)
-        print(f"Getting owner for home team: {home_team}")
         home_owner, home_color = get_team_owner(str(home_team), ja_t, jo_t, na_t, pa_t)
 
         doc = {
@@ -98,7 +92,6 @@ def get_homepage_data(current_week):
 
 def get_homepage_standings(current_week_record_df):
     standings = get_standings()
-    print(standings)
     standings = standings.drop(["Team"], axis=1)
     standings = standings.groupby(by="Name").sum().reset_index()
     standings_columns = standings.columns.tolist()

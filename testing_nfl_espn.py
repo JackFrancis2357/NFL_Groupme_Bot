@@ -93,4 +93,3 @@ list_of_records = []
 
 logging.info("This is a test from the dataframe file")
 # LOGGER.info("Now printing the dataframe head.")
-# print(nfl_results_df.head())

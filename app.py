@@ -5,8 +5,6 @@ import os
 from configs import Config
 from helpers import groupme_lib, setup_logger
 
-setup_logger.config_logger()
-
 from flask import Flask, request, session, render_template
 from flask_bootstrap import Bootstrap
 from flask_session import Session
@@ -15,6 +13,7 @@ from app_helper_functions import get_teams, get_current_week
 from get_homepage_data import get_homepage_data, get_homepage_standings
 from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings, get_schedule
 
+setup_logger.config_logger()
 app = Flask(__name__)
 bootstrap = Bootstrap(app)
 app.config["SECRET_KEY"] = os.getenv("FLASK_SECRET")
@@ -35,8 +34,6 @@ def homepage():
         current_week_record_df,
     ) = get_homepage_data(week)
     standings_docs, standings_columns = get_homepage_standings(current_week_record_df)
-    print(standings_docs, standings_columns)
-
     return render_template(
         "nfl_wins_homepage.html",
         matchups=matchups,
