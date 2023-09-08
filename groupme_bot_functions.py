@@ -3,7 +3,7 @@ import os
 import requests
 import pandas as pd
 from lxml import html
-from app_helper_functions import get_teams
+from app_helper_functions import get_teams, get_start_final_date
 import configs
 
 
@@ -51,72 +51,27 @@ def get_standings_message(standings):
     return message
 
 
-def get_team_data_espn(tree, base_xpath, i, conference_div):
-    try:
-        cur_team_data = tree.xpath(f"{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[3]/a")
-        if len(cur_team_data[0].text_content()) < 4:
-            cur_team_data = tree.xpath(
-                f"{base_xpath}div[{conference_div}]/div/div[2]/table/tbody/tr[{i}]/td/div/span[4]/a"
-            )
-        team_name = cur_team_data[0].text_content()
-    except IndexError:
-        return "error", "", "", ""
-
-    cur_team_wins = tree.xpath(
-        f"{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[1]/span"
-    )
-    cur_team_loss = tree.xpath(
-        f"{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[2]/span"
-    )
-    cur_team_tie = tree.xpath(f"{base_xpath}div[{conference_div}]/div/div[2]/div/div[2]/table/tbody/tr[{i}]/td[3]/span")
-
-    wins = int(cur_team_wins[0].text_content())
-    losses = int(cur_team_loss[0].text_content())
-    ties = int(cur_team_tie[0].text_content())
-
-    return team_name, wins, losses, ties
-
-
-# NOT IN USE - need to debug to get this working
-def get_conference(standings_df: pd.DataFrame, tree: html.HtmlElement, base_xpath: str, conf_div: int, rng: int = 21):
-    """Get a particular conference table from ESPN web page."""
-    for i in range(1, rng):
-        team_name, wins, losses, ties = get_team_data_espn(
-            tree=tree, base_xpath=base_xpath, i=i, conference_div=conf_div
-        )
-        if team_name == "error":
-            continue
-        standings_df = pd.concat(
-            [standings_df, pd.DataFrame({"Team": [team_name], "Wins": [wins], "Losses": [losses], "Ties": [ties]})],
-            ignore_index=True,
-        )
-    return standings_df
-
-
-def get_standings():
+def get_standings(current_week):
+    start_date, final_date = get_start_final_date(current_week)
     standings = pd.DataFrame(0, index=range(32), columns=["Team", "Wins", "Losses", "Ties"])
+    espn_score_data = requests.get(
+        f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}"
+    ).json()
     ctr = 0
-    for i in range(1, 35):
-        url_str = f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{i}"
-        try:
-            team_dict = requests.get(url_str).json()
-            record = team_dict["team"]["record"]["items"][0]["summary"]
-            short_name = team_dict["team"]["name"]
-            full_name = team_dict["team"]["displayName"]
-            abb = team_dict["team"]["abbreviation"]
-            record_split = record.split("-")
-            wins = record_split[0]
-            losses = record_split[1]
-            try:
-                ties = record_split[2]
-            except IndexError:
-                ties = 0
-            standings.iloc[ctr, :] = full_name, wins, losses, ties
-            ctr += 1
-
-        except KeyError:
-            print(i)
-        
+    for event in espn_score_data["events"]:
+        for competition in event["competitions"]:
+            for competitor in competition["competitors"]:
+                record = competitor["records"][0]["summary"]
+                full_name = competitor["team"]["displayName"]
+                record_split = record.split("-")
+                wins = record_split[0]
+                losses = record_split[1]
+                try:
+                    ties = record_split[2]
+                except IndexError:
+                    ties = 0
+                standings.iloc[ctr, :] = full_name, wins, losses, ties
+                ctr += 1
     # Get teams and their owners and remove `all` key to prevent all teams matching in team-name mask below
     teams = get_teams()
     teams.pop("all")

@@ -33,7 +33,7 @@ def homepage():
         owner_matchups_columns,
         current_week_record_df,
     ) = get_homepage_data(week)
-    standings_docs, standings_columns = get_homepage_standings(current_week_record_df)
+    standings_docs, standings_columns = get_homepage_standings(current_week_record_df, week)
     return render_template(
         "nfl_wins_homepage.html",
         matchups=matchups,
@@ -48,24 +48,6 @@ def homepage():
 
 @app.route("/groupmebot", methods=["POST"])
 def webhook():
-    # The web hook that's called every time a message is sent in the chat.
-    # The function receives the following JSON in a POST
-    #       Credit: GroupMe Bot API V3
-    #
-    # {
-    #   "attachments": [],
-    #   "avatar_url": "http://i.groupme.com/123456789",
-    #   "created_at": 1302623328,
-    #   "group_id": "1234567890",
-    #   "id": "1234567890",
-    #   "name": "John",
-    #   "sender_id": "12345",
-    #   "sender_type": "user",
-    #   "source_guid": "GUID",
-    #   "system": false,
-    #   "text": "Hello world ☃☃",
-    #   "user_id": "1234567890"
-    # }
 
     # json we receive for every message in the chat
     data = request.get_json()
@@ -109,7 +91,8 @@ def webhook():
 
     # Only if message is something we want to reply to do we request data from ESPN
     if current_message in Config["Responses"]:
-        standings = get_standings()
+        week = get_current_week()
+        standings = get_standings(week)
 
         # If message is 'standings', print Jack, Jordan, Nathan, Patrick records
         if current_message == "standings":
