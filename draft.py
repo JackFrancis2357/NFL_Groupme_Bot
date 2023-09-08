@@ -19,11 +19,8 @@ def get_teams():
 def teams_drafted(season):
     """Get a list of teams drafted so far."""
     result = sql_lib.execute_query(
-        f"SELECT team_name "
-        f"FROM season "
-        f"JOIN team "
-        f"ON season.team_id = team.id "
-        f"WHERE season='{season}';")
+        f"SELECT team_name " f"FROM season " f"JOIN team " f"ON season.team_id = team.id " f"WHERE season='{season}';"
+    )
     teams_list = []
 
     drafted_string = ""
@@ -42,24 +39,29 @@ def draft_team(user, team, season, position):
     team_id = sql_lib.execute_query(f"SELECT team.id FROM team where UPPER(team_name)='{team}';")[0][0]
 
     # Record draft selection
-    _ = sql_lib.execute_query(f"INSERT INTO season (season, owner_id, team_id, draft_position) "
-                              f"SELECT '{season}' as season, player.id, {team_id} as team_id, {position} as draft_position "
-                              f"FROM player "
-                              f"WHERE player.groupme_user_id='{user}';"
-                              )
+    _ = sql_lib.execute_query(
+        f"INSERT INTO season (season, owner_id, team_id, draft_position) "
+        f"SELECT '{season}' as season, player.id, {team_id} as team_id, {position} as draft_position "
+        f"FROM player "
+        f"WHERE player.groupme_user_id='{user}';"
+    )
 
 
 def check_team_draft_status(team, season):
     """Check if a team has already been drafted this year."""
-    query = f"SELECT * FROM season JOIN team on season.team_id  = team.id" \
-                    f" WHERE upper(team_name)='{team}' AND season='{season}';"
+    query = (
+        f"SELECT * FROM season JOIN team on season.team_id  = team.id"
+        f" WHERE upper(team_name)='{team}' AND season='{season}';"
+    )
     return True if sql_lib.execute_query(query) else False
 
 
 def get_teams_remaining():
-    query_results = sql_lib.execute_query(f"SELECT team_name FROM team"
-                f" JOIN (select id from team where not exists (select from season where season='{Config['season']}'"
-                f" and team.id=season.team_id)) as team_result on team.id=team_result.id;")
+    query_results = sql_lib.execute_query(
+        f"SELECT team_name FROM team"
+        f" JOIN (select id from team where not exists (select from season where season='{Config['season']}'"
+        f" and team.id=season.team_id)) as team_result on team.id=team_result.id;"
+    )
     result_string = ""
     for res in query_results:
         result_string += f"{res[0]}\n"
@@ -74,7 +76,6 @@ def get_username_by_id(user_id, participants):
 
 
 def make_selection(user, message):
-
     logging.info(f"Received message: {message} from {user}")
     query_results = sql_lib.execute_query(f"select * from draft where season='{Config['season']}';")
     current_user = query_results[0][2]
@@ -84,15 +85,13 @@ def make_selection(user, message):
     # Don't let a user draft out of turn
     if user != current_user:
         logging.info("User out of turn - returning message")
-        return templates.out_of_turn.format(
-            get_username_by_id(current_user, participants)
-        )
+        return templates.out_of_turn.format(get_username_by_id(current_user, participants))
 
     # Parse out a valid team
     selection = message.split("draft ")[1]
     teams = [team.upper() for team in get_teams()]
 
-    if check_team_draft_status(selection.upper(), Config['season']):
+    if check_team_draft_status(selection.upper(), Config["season"]):
         # TODO: Add draft status method
         logging.info("Selection has already been taken - returning message")
         return templates.selection_taken.format(selection.title())
@@ -100,12 +99,7 @@ def make_selection(user, message):
     if selection.upper() in teams:
         logging.info(f"Valid selection of: {selection.upper()}")
         logging.info("Logging user selection in database")
-        draft_team(
-            current_user,
-            selection.upper(),
-            Config['season'],
-            team_count + 1
-        )
+        draft_team(current_user, selection.upper(), Config["season"], team_count + 1)
 
         # Send a message to the group that the pick has been made
         # Use this variable to hold the user who picked - current user will now be the next up
@@ -114,20 +108,19 @@ def make_selection(user, message):
 
         # Set the next drafter - update current_user variable to reflect this
         set_current_drafter()
-        current_user = sql_lib.execute_query(f"select current_drafter from draft where season='{Config['season']}';")[0][0]
+        current_user = sql_lib.execute_query(f"select current_drafter from draft where season='{Config['season']}';")[
+            0
+        ][0]
 
         ack_message = templates.draft_acknowledgment.format(
-            team_count + 1,
-            pick_made_by,
-            selection.title(),
-            get_username_by_id(current_user, participants)
+            team_count + 1, pick_made_by, selection.title(), get_username_by_id(current_user, participants)
         )
 
         # End the draft if all teams are drafted
         if team_count + 1 >= int(Config["num_teams"]):
             logging.info("End of draft! Returning message")
             sql_lib.execute_query(f"update draft set active={False};")
-            return templates.end_message.format(Config['season'])
+            return templates.end_message.format(Config["season"])
 
         logging.info("Successful pick made - returning message")
         return ack_message
@@ -144,17 +137,17 @@ def draft_active():
 
 def init_draft(participants, draft_order=None, snake=True):
     current_drafter = draft_order[0]
-    participants_string = json.dumps(participants).replace("'", "\"")
-    draft_order_string = json.dumps(draft_order).replace("'", "\"").replace("[", "{").replace("]", "}")
+    participants_string = json.dumps(participants).replace("'", '"')
+    draft_order_string = json.dumps(draft_order).replace("'", '"').replace("[", "{").replace("]", "}")
     query = f"insert into draft(participants, draft_order, current_drafter, snake, season, active) values ('{participants_string}', '{draft_order_string}', '{current_drafter}', {snake}, '{Config['season']}', {True});"
     sql_lib.execute_query(query, update=True)
     welcome_message = templates.draft_welcome_message.format(
-        Config['season'],
+        Config["season"],
         get_username_by_id(draft_order[0], participants),
         get_username_by_id(draft_order[1], participants),
         get_username_by_id(draft_order[2], participants),
         get_username_by_id(draft_order[3], participants),
-        get_username_by_id(draft_order[0], participants)
+        get_username_by_id(draft_order[0], participants),
     )
     return welcome_message
 
@@ -170,7 +163,7 @@ def set_current_drafter():
         # Reverse the draft order
         logging.info("Reversing the draft order for snake")
         draft_order_reverse = draft_order[::-1]
-        draft_order_reverse = json.dumps(draft_order_reverse).replace("'", "\"").replace("[", "{").replace("]", "}")
+        draft_order_reverse = json.dumps(draft_order_reverse).replace("'", '"').replace("[", "{").replace("]", "}")
         sql_lib.execute_query(f"update draft set draft_order='{draft_order_reverse}';", update=True)
         # Current user stays the same - snake
         return
