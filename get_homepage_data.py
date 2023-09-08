@@ -1,5 +1,5 @@
 import pandas as pd
-from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value
+from app_helper_functions import get_team_abb, get_team_owner, get_owner_hex_value, get_start_final_date
 from groupme_bot_functions import get_standings
 import datetime
 import requests
@@ -21,12 +21,7 @@ def get_homepage_data(current_week):
     weekly_matchups_df = pd.DataFrame(0, index=default_name_ordering, columns=default_name_ordering)
     current_week_record_df = pd.DataFrame(0, index=default_name_ordering, columns=["Wins", "Losses", "Ties"])
 
-    # Get current scores
-    nfl_season_start = datetime.datetime.strptime(Config["nfl_season_start_date"], "%m/%d/%Y")
-    final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
-    start_date = final_date - datetime.timedelta(days=6)
-    final_date = datetime.datetime.strftime(final_date, "%Y%m%d")
-    start_date = datetime.datetime.strftime(start_date, "%Y%m%d")
+    start_date, final_date = get_start_final_date(current_week)
 
     score_dict = get_current_scores(start_date, final_date)
 
@@ -90,8 +85,8 @@ def get_homepage_data(current_week):
     return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns, current_week_record_df
 
 
-def get_homepage_standings(current_week_record_df):
-    standings = get_standings()
+def get_homepage_standings(current_week_record_df, current_week):
+    standings = get_standings(current_week)
     standings = standings.drop(["Team"], axis=1)
     standings = standings.groupby(by="Name").sum().reset_index()
     standings_columns = standings.columns.tolist()
@@ -140,4 +135,5 @@ def get_current_scores(start_date, final_date):
                     score_dict["WAS"] = competitor["score"], status
                 else:
                     score_dict[competitor["team"]["abbreviation"]] = competitor["score"], status
+
     return score_dict

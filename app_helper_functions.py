@@ -7,7 +7,6 @@ from configs import Config
 
 # from helpers import sql_lib
 
-
 def get_team_list(teams_list):
     team_abb_list = []
     for team in teams_list:
@@ -51,17 +50,26 @@ def get_teams():
     #     ]
     #     teams["Nathan"] = [team[0].title() for team in sql_lib.execute_query(base_query.format("Nathan Lee", "2022"))]
 
-    # Check for 49Ers
-    teams["Jack"] = fix_49ers(teams["Jack"])
-    teams["Jordan"] = fix_49ers(teams["Jordan"])
-    teams["Patrick"] = fix_49ers(teams["Patrick"])
-    teams["Nathan"] = fix_49ers(teams["Nathan"])
+    # TODO Looks like this issue is fixed. Will remove after week 1 games
+    # teams["Jack"] = fix_49ers(teams["Jack"])
+    # teams["Jordan"] = fix_49ers(teams["Jordan"])
+    # teams["Patrick"] = fix_49ers(teams["Patrick"])
+    # teams["Nathan"] = fix_49ers(teams["Nathan"])
 
     all_teams = []
     for lst in teams.values():
         all_teams += [val for val in lst]
     teams["all"] = all_teams
     return teams
+
+def get_start_final_date(current_week):
+    # Get current scores
+    nfl_season_start = datetime.datetime.strptime(Config["nfl_season_start_date"], "%m/%d/%Y")
+    final_date = nfl_season_start + datetime.timedelta(weeks=current_week)
+    start_date = final_date - datetime.timedelta(days=6)
+    final_date = datetime.datetime.strftime(final_date, "%Y%m%d")
+    start_date = datetime.datetime.strftime(start_date, "%Y%m%d")
+    return start_date, final_date
 
 
 def get_team_abb():
