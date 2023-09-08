@@ -97,7 +97,6 @@ def get_standings():
     standings = pd.DataFrame(0, index=range(32), columns=["Team", "Wins", "Losses", "Ties"])
     ctr = 0
     for i in range(1, 35):
-        start = time.time()
         url_str = f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{i}"
         try:
             team_dict = requests.get(url_str).json()
