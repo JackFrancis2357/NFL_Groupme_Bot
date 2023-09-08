@@ -87,7 +87,7 @@ def get_schedule(team_id, starting_week, finishing_week=18):
         if team_id in k:
             team_abbreviation = v[0]
 
-    nfl_schedule_df = pd.read_csv("./2023_NFL_Schedule_Grid.csv")
+    nfl_schedule_df = pd.read_csv("./NFL_Schedule_Data/2023_NFL_Schedule_Grid.csv")
     try:
         schedule = nfl_schedule_df.loc[nfl_schedule_df["Team"] == team_abbreviation]
     except:
