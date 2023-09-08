@@ -83,9 +83,9 @@ def get_standings(current_week):
 
 
 def get_schedule(team_id, starting_week, finishing_week=18):
-    for k, v in configs.team_mapping_configs.items():
+    for k, v in configs.team_mapping_configs["TEAMS"]:
         if team_id in k:
-            team_abbreviation = v[0]
+            team_abbreviation = v["Abbrev"]
 
     nfl_schedule_df = pd.read_csv("./NFL_Schedule_Data/2023_NFL_Schedule_Grid.csv")
     try:

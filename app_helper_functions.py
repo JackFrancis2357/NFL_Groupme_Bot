@@ -7,12 +7,13 @@ from configs import Config
 
 # from helpers import sql_lib
 
+
 def get_team_list(teams_list):
     team_abb_list = []
     for team in teams_list:
         if team == "San Francisco 49Ers":
             team = "San Francisco 49ers"
-        team_abb_list.append(configs.team_mapping_configs[team][0])
+        team_abb_list.append(configs.team_mapping_configs["TEAMS"][team]["Abbrev"])
     return team_abb_list
 
 
@@ -61,6 +62,7 @@ def get_teams():
         all_teams += [val for val in lst]
     teams["all"] = all_teams
     return teams
+
 
 def get_start_final_date(current_week):
     # Get current scores
