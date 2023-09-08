@@ -1,11 +1,14 @@
 import datetime
+import logging
+
 import numpy as np
 from pytz import timezone
 
-import configs
 from configs import Config
 
 # from helpers import sql_lib
+
+logger = logging.getLogger(__name__)
 
 
 def get_team_abb_list(teams_list):
@@ -28,6 +31,7 @@ def get_teams():
         for lst in teams.values():
             all_teams += [val for val in lst]
         teams["all"] = all_teams
+        logger.info("Successfully called ESPN and got a response")
     else:
         # TODO Enable Team selection with Postgres on Render and other DB functionality. Commenting out for now
         # else:

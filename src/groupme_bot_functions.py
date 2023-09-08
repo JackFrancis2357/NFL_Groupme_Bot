@@ -1,10 +1,13 @@
 import logging
 import os
-import requests
-import pandas as pd
 
-from app_helper_functions import get_teams, get_start_final_date
+import pandas as pd
+import requests
+
 from configs import Config
+from src.app_helper_functions import get_start_final_date, get_teams
+
+logger = logging.getLogger(__name__)
 
 
 def send_message(msg):
@@ -57,6 +60,7 @@ def get_standings(current_week):
     espn_score_data = requests.get(
         f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}"
     ).json()
+    logger.info("Successfully called ESPN and got a response")
     ctr = 0
     for event in espn_score_data["events"]:
         for competition in event["competitions"]:

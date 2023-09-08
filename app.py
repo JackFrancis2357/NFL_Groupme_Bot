@@ -1,17 +1,18 @@
 import logging
 import os
 
+from flask import Flask, render_template, request, session
+from flask_bootstrap import Bootstrap
+
 # import draft
 from configs import Config
-from helpers import groupme_lib, setup_logger
-
-from flask import Flask, request, session, render_template
-from flask_bootstrap import Bootstrap
 from flask_session import Session
-
-from app_helper_functions import get_teams, get_current_week
-from get_homepage_data import get_homepage_data, get_homepage_standings
-from groupme_bot_functions import return_contestant, send_message, get_standings_message, get_standings, get_schedule
+from helpers import groupme_lib, setup_logger
+from src.app_helper_functions import get_current_week, get_teams
+from src.get_homepage_data import get_homepage_data, get_homepage_standings
+from src.groupme_bot_functions import (get_schedule, get_standings,
+                                       get_standings_message,
+                                       return_contestant, send_message)
 
 setup_logger.config_logger()
 app = Flask(__name__)
@@ -21,6 +22,7 @@ app.config["SESSION_TYPE"] = "filesystem"
 FLASK_DEBUG = True
 Session(app)
 
+logger = logging.getLogger(__name__)
 
 @app.route("/", methods=["GET", "POST"])
 def homepage():
@@ -33,7 +35,10 @@ def homepage():
         owner_matchups_columns,
         current_week_record_df,
     ) = get_homepage_data(week)
+    logger.info("Finished getting homepage data")
     standings_docs, standings_columns = get_homepage_standings(current_week_record_df, week)
+    logger.info("Finished getting homepage standings")
+    logger.info("Rendering Page")
     return render_template(
         "nfl_wins_homepage.html",
         matchups=matchups,
@@ -85,8 +90,6 @@ def webhook():
     #     elif current_message.lower().startswith("draft"):
     #         selection_message = draft.make_selection(current_user, current_message)
     #         return send_message(selection_message)
-
-    logging.info(Config["RESPONSES"])
 
     # Only if message is something we want to reply to do we request data from ESPN
     if current_message in Config["RESPONSES"]:
