@@ -94,27 +94,28 @@ def get_conference(standings_df: pd.DataFrame, tree: html.HtmlElement, base_xpat
 
 
 def get_standings():
-    r = requests.get("https://www.espn.com/nfl/standings")
-    tree = html.fromstring(r.content)
-
     standings = pd.DataFrame(0, index=range(32), columns=["Team", "Wins", "Losses", "Ties"])
-    base_xpath = '//*[@id="fittPageContainer"]/div[3]/div/div[1]/section/div/section/div[2]/div/section/'
     ctr = 0
-    # AFC Teams
-    for i in range(1, 21):
-        team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=1)
-        if team_name == "error":
-            continue
-        standings.iloc[ctr, :] = team_name, wins, losses, ties
-        ctr += 1
+    for i in range(1, 35):
+        url_str = f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{i}"
+        try:
+            team_dict = requests.get(url_str).json()
+            record = team_dict["team"]["record"]["items"][0]["summary"]
+            short_name = team_dict["team"]["name"]
+            full_name = team_dict["team"]["displayName"]
+            abb = team_dict["team"]["abbreviation"]
+            record_split = record.split("-")
+            wins = record_split[0]
+            losses = record_split[1]
+            try:
+                ties = record_split[2]
+            except IndexError:
+                ties = 0
+            standings.iloc[ctr, :] = full_name, wins, losses, ties
+            ctr += 1
 
-    # NFC Teams
-    for i in range(1, 21):
-        team_name, wins, losses, ties = get_team_data_espn(tree=tree, base_xpath=base_xpath, i=i, conference_div=2)
-        if team_name == "error":
-            continue
-        standings.iloc[ctr, :] = team_name, wins, losses, ties
-        ctr += 1
+        except KeyError:
+            print(i)
 
     # Get teams and their owners and remove `all` key to prevent all teams matching in team-name mask below
     teams = get_teams()
@@ -122,6 +123,8 @@ def get_standings():
 
     for owner, tm in teams.items():
         standings.loc[standings["Team"].isin(tm), "Name"] = owner
+    print(standings)
+    standings[["Wins", "Losses", "Ties"]] = standings[["Wins", "Losses", "Ties"]].apply(pd.to_numeric)
     return standings
 
 
@@ -130,7 +133,7 @@ def get_schedule(team_id, starting_week, finishing_week=18):
         if team_id in k:
             team_abbreviation = v[0]
 
-    nfl_schedule_df = pd.read_csv("./2021_NFL_Schedule_Grid.csv")
+    nfl_schedule_df = pd.read_csv("./2023_NFL_Schedule_Grid.csv")
     try:
         schedule = nfl_schedule_df.loc[nfl_schedule_df["Team"] == team_abbreviation]
     except:
