@@ -1,105 +1,105 @@
 {% extends "shared_layout.html" %}
 {% block content %}
 
-    <div class="container">
-        <div class="row ml-8 mr-8">
-            <div class="col-sm-3">
-                <table class="table table-striped">
-                    <thead>
+<div class="container">
+    <div class="row ml-8 mr-8">
+        <div class="col-sm-3">
+            <table class="table table-striped">
+                <thead>
                     {%- for column in columns %}
-                        <th>{{ column }}</th>
+                    <th>{{ column }}</th>
                     {%- endfor %}
-                    </thead>
+                </thead>
 
-                    <tbody>
+                <tbody>
                     {%- for row in matchups %}
-                        <tr>
-                            <td class='text-center' style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{ row.Away_Score }}</td>
-                            <td class='text-center' style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{ row.Home_Score }}</td>
-                            <td class='text-center'
-                                style="background-color: white"> {{ row.Status }}</td>
-                        </tr>
+                    <tr>
+                        <td class='text-center' style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{
+                            row.Away_Score }}</td>
+                        <td class='text-center' style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{
+                            row.Home_Score }}</td>
+                        <td class='text-center' style="background-color: white"> {{ row.Status }}</td>
+                    </tr>
                     {%- endfor %}
-                    </tbody>
-                </table>
-            </div>
-            <div class="col-sm-3">
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3">
+            <table class="table table-striped">
+                <thead>
+                    {%- for column in columns %}
+                    <th>{{ column }}</th>
+                    {%- endfor %}
+                </thead>
+
+                <tbody>
+                    {%- for row in matchups_two %}
+                    <tr>
+                        <td class='text-center' style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{
+                            row.Away_Score }}</td>
+                        <td class='text-center' style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{
+                            row.Home_Score }}</td>
+                        <td class='text-center' style="background-color: white"> {{ row.Status }}</td>
+                    </tr>
+                    {%- endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-3">
+            <div class="row">
                 <table class="table table-striped">
                     <thead>
-                    {%- for column in columns %}
+                        {%- for column in owner_matchups_columns %}
                         <th>{{ column }}</th>
-                    {%- endfor %}
+                        {%- endfor %}
                     </thead>
 
                     <tbody>
-                    {%- for row in matchups_two %}
-                        <tr>
-                            <td class='text-center'
-                                style="background-color: {{ row.Away_Owner }}"> {{ row.Away }}: {{ row.Away_Score }}</td>
-                            <td class='text-center'
-                                style="background-color: {{ row.Home_Owner }}"> {{ row.Home }}: {{ row.Home_Score }}</td>
-                            <td class='text-center'
-                                style="background-color: white"> {{ row.Status }}</td>
+                        {%- for row in owner_matchups %}
+                        <tr> 
+                            <td class='text-center' style="background-color: {{ row.owner_color }}"> {{ row.owner }}
+                            </td>
+                            <td class='text-center'> {{ row.Jack }}</td>
+                            <td class='text-center'> {{ row.Jordan }}</td>
+                            <td class='text-center'> {{ row.Nathan }}</td>
+                            <td class='text-center'> {{ row.Patrick }}</td>
                         </tr>
-                    {%- endfor %}
+                        {%- endfor %}
                     </tbody>
                 </table>
             </div>
-            <div class="col-sm-3">
-                <div class="row">
-                    <table class="table table-striped">
-                        <thead>
-                        {%- for column in owner_matchups_columns %}
-                            <th>{{ column }}</th>
-                        {%- endfor %}
-                        </thead>
-
-                        <tbody>
-                        {%- for row in owner_matchups %}
-                            <tr>
-                                <td class='text-center'
-                                    style="background-color: {{ row.owner_color }}"> {{ row.owner }}</td>
-                                <td class='text-center'> {{ row.Jack }}</td>
-                                <td class='text-center'> {{ row.Jordan }}</td>
-                                <td class='text-center'> {{ row.Nathan }}</td>
-                                <td class='text-center'> {{ row.Patrick }}</td>
-                            </tr>
-                        {%- endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div class="row">
-                    <table class="table table-striped">
-                        <thead>
-                        {%- for column in standings_columns %}
-                            <th>{{ column }}</th>
-                        {%- endfor %}
-                        </thead>
-
-                        <tbody>
-                        {%- for row in standings %}
-                            <tr>
-                                <td class='text-center'
-                                    style="background-color: {{ row.owner_color }}"> {{ row.owner }}</td>
-                                <td class='text-center'> {{ row.wins }}</td>
-                                <td class='text-center'> {{ row.losses }}</td>
-                                <td class='text-center'> {{ row.ties }}</td>
-                                <td class='text-center'> {{ row.current_record }}</td>
-                            </tr>
-                        {%- endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-
             <div class="row">
-                {% if error %}
-                    <div class="alert alert-danger" role="alert">
-                        {{ error }}
-                    </div>
-                {% endif %}
+                <table class="table table-striped">
+                    <thead>
+                        {%- for column in standings_columns %}
+                        <th>{{ column }}</th>
+                        {%- endfor %}
+                    </thead>
+
+                    <tbody>
+                        {%- for row in standings %}
+                        <tr>
+                            <td class='text-center' style="background-color: {{ row.owner_color }}"> {{ row.owner }}
+                            </td>
+                            <td class='text-center'> {{ row.wins }}</td>
+                            <td class='text-center'> {{ row.losses }}</td>
+                            <td class='text-center'> {{ row.ties }}</td>
+                            <td class='text-center'> {{ row.current_record }}</td>
+                        </tr>
+                        {%- endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
+
+
+        <div class="row">
+            {% if error %}
+            <div class="alert alert-danger" role="alert">
+                {{ error }}
+            </div>
+            {% endif %}
+        </div>
     </div>
+</div>
 {% endblock %}

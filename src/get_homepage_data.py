@@ -1,15 +1,19 @@
+import logging
+
 import pandas as pd
-from app_helper_functions import get_team_abb, get_team_owner, get_start_final_date
-from groupme_bot_functions import get_standings
-import datetime
 import requests
 
 from configs import Config
+from src.app_helper_functions import get_start_final_date, get_team_abb, get_team_owner
+from src.groupme_bot_functions import get_standings
+
+logger = logging.getLogger(__name__)
 
 
 def get_homepage_data(current_week):
     default_name_ordering = ["Jack", "Jordan", "Nathan", "Patrick"]
     matchups_df = pd.read_csv(Config["BASE_CONFIG"]["weekly_matchups_filepath"])
+    logger.info("Loaded in weekly matchups")
     current_matchups = matchups_df[f"Wk_{current_week}_Matchups"]
     current_matchups = current_matchups[current_matchups != "0"]
     away_home_teams = current_matchups.str.split(pat="at", expand=True)
@@ -18,10 +22,12 @@ def get_homepage_data(current_week):
     away_home_teams["Home"] = away_home_teams["Home"].map(lambda x: x.lstrip())
 
     ja_t, jo_t, na_t, pa_t = get_team_abb()
+    logger.info("Got Team Abbreviations for each owner")
     weekly_matchups_df = pd.DataFrame(0, index=default_name_ordering, columns=default_name_ordering)
     current_week_record_df = pd.DataFrame(0, index=default_name_ordering, columns=["Wins", "Losses", "Ties"])
 
     start_date, final_date = get_start_final_date(current_week)
+    logger.info(f"Found the start date {start_date} and final date {final_date}")
 
     score_dict = get_current_scores(start_date, final_date)
 
@@ -66,6 +72,8 @@ def get_homepage_data(current_week):
             current_week_record_df.loc[home_owner, "Losses"] += 1
             current_week_record_df.loc[away_owner, "Wins"] += 1
 
+    logger.info(f"Finished generating the current_week_record_df with shape {current_week_record_df.shape}")
+
     owner_matchups = []
     for i in range(weekly_matchups_df.shape[0]):
         weekly_matchups_df.iloc[i, i] /= 2
@@ -82,12 +90,14 @@ def get_homepage_data(current_week):
 
     owner_matchups_columns = [x for x in weekly_matchups_df.columns.tolist()]
     owner_matchups_columns.insert(0, "Table")
+    logger.info("Finished generating the weekly matchup tables")
 
     return matchups, matchups_columns, matchups_two, owner_matchups, owner_matchups_columns, current_week_record_df
 
 
 def get_homepage_standings(current_week_record_df, current_week):
     standings = get_standings(current_week)
+    logger.info(f"Finished getting the standings {standings.iloc[0, :]}")
     standings = standings.drop(["Team"], axis=1)
     standings = standings.groupby(by="Name").sum().reset_index()
     standings_columns = standings.columns.tolist()
@@ -111,6 +121,7 @@ def get_homepage_standings(current_week_record_df, current_week):
             "current_record": current_record,
         }
         standings_docs.append(doc)
+    logger.info(f"Finished generating the standings info {standings_docs[0]}")
     return standings_docs, standings_columns
 
 
@@ -119,6 +130,7 @@ def get_current_scores(start_date, final_date):
     espn_score_data = requests.get(
         f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}"
     ).json()
+    logger.info("Successfully called ESPN and got a response")
     for event in espn_score_data["events"]:
         for competition in event["competitions"]:
             try:
@@ -137,5 +149,5 @@ def get_current_scores(start_date, final_date):
                     score_dict["WAS"] = competitor["score"], status
                 else:
                     score_dict[competitor["team"]["abbreviation"]] = competitor["score"], status
-
+    logger.info("Successfully got current scores")
     return score_dict
