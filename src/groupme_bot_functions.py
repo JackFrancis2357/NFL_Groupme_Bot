@@ -43,6 +43,8 @@ def return_contestant(name, standings):
 
 def get_standings_message(standings):
     names = standings["Name"].unique().tolist()
+    cleaned_names = [x for x in names if str(x) != "nan"]
+    names = cleaned_names
     logging.info(f"Names to be sorted for standings message: {names}")
     names.sort()
     wins = [int(i) for i in standings.groupby("Name").sum().reset_index()["Wins"].tolist()]
