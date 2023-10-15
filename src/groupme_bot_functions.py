@@ -43,8 +43,6 @@ def return_contestant(name, standings):
 
 def get_standings_message(standings):
     names = standings["Name"].unique().tolist()
-    cleaned_names = [x for x in names if str(x) != "nan"]
-    names = cleaned_names
     logging.info(f"Names to be sorted for standings message: {names}")
     names.sort()
     wins = [int(i) for i in standings.groupby("Name").sum().reset_index()["Wins"].tolist()]
@@ -59,25 +57,27 @@ def get_standings_message(standings):
 def get_standings(current_week):
     start_date, final_date = get_start_final_date(current_week)
     standings = pd.DataFrame(0, index=range(32), columns=["Team", "Wins", "Losses", "Ties"])
-    espn_score_data = requests.get(
-        f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/scoreboard?dates={start_date}-{final_date}"
-    ).json()
-    logger.info("Successfully called ESPN and got a response")
     ctr = 0
-    for event in espn_score_data["events"]:
-        for competition in event["competitions"]:
-            for competitor in competition["competitors"]:
-                record = competitor["records"][0]["summary"]
-                full_name = competitor["team"]["displayName"]
-                record_split = record.split("-")
-                wins = record_split[0]
-                losses = record_split[1]
-                try:
-                    ties = record_split[2]
-                except IndexError:
-                    ties = 0
-                standings.iloc[ctr, :] = full_name, wins, losses, ties
-                ctr += 1
+    for i in range(1, 35):
+        url_str = f"http://site.api.espn.com/apis/site/v2/sports/football/nfl/teams/{i}"
+        try:
+            team_dict = requests.get(url_str).json()
+            record = team_dict["team"]["record"]["items"][0]["summary"]
+            short_name = team_dict["team"]["name"]
+            full_name = team_dict["team"]["displayName"]
+            abb = team_dict["team"]["abbreviation"]
+            record_split = record.split("-")
+            wins = record_split[0]
+            losses = record_split[1]
+            try:
+                ties = record_split[2]
+            except IndexError:
+                ties = 0
+            standings.iloc[ctr, :] = full_name, wins, losses, ties
+            ctr += 1
+        except KeyError:
+            print(i)
+    logger.info(standings)
     # Get teams and their owners and remove `all` key to prevent all teams matching in team-name mask below
     teams = get_teams()
     teams.pop("all")
